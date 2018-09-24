@@ -1,0 +1,10 @@
+//
+// Created by giacomo on 22/09/18.
+//
+
+#ifndef EDGEINDEXING_RELATIONSHIPS_H
+#define EDGEINDEXING_RELATIONSHIPS_H
+
+
+
+#endif //EDGEINDEXING_RELATIONSHIPS_H
