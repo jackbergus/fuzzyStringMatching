@@ -3,8 +3,8 @@
 //
 
 #define IS_LIBRARY
-#include "reader_test.cpp"
-#include "fromJava/org_ufl_hypogator_jackb_traversers_conceptnet_JNIEntryPoint.h"
+#include "libjni_test.cpp"
+#include "../fromJava/org_ufl_hypogator_jackb_traversers_conceptnet_JNIEntryPoint.h"
 
 JNIEXPORT void JNICALL Java_org_ufl_hypogator_jackb_traversers_conceptnet_JNIEntryPoint_init(JNIEnv * env, jobject obj)
 {

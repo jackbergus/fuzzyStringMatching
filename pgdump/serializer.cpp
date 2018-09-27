@@ -6,13 +6,13 @@
 #define SERIALIZE_OFFSET
 
 #include "json.hpp"
-#include "fromJava/evaluateHashes.h"
-#include "serializers/commons/primary_memory/entity_relationship.h"
-#include "serializers/commons/secondary_memory/header.h"
-#include "serializers/commons/Serialize.h"
-#include "serializers/commons/secondary_memory/primary_index.h"
-#include "rbtree/rbtree.h"
-#include "numeric/compares.h"
+#include "../fromJava/evaluateHashes.h"
+#include "../serializers/commons/primary_memory/entity_relationship.h"
+#include "../serializers/commons/secondary_memory/header.h"
+#include "../serializers/commons/Serialize.h"
+#include "../serializers/commons/secondary_memory/primary_index.h"
+#include "../rbtree/rbtree.h"
+#include "../numeric/compares.h"
 #include <unistd.h>
 
 

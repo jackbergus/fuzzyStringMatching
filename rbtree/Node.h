@@ -26,6 +26,7 @@
 #include "enums.h"
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 /**
  * Defines the node of a RBtree. Each node contains a list of elements

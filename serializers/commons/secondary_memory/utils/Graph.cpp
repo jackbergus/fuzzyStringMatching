@@ -39,28 +39,37 @@ bool Graph::open() {
 }
 
 bool Graph::clos() {
+    bool clos = false;
     if (begin != nullptr) {
         munmap(begin, size);
         begin = nullptr;
         close(fd);
         fd = size = 0;
+        clos = true;
+    }
 
         /*munmap(index, sizei);
         index = nullptr;
         close(fdi);
         fdi = sizei = 0;*/
 
-        munmap(edgePointer, sizeEP);
-        edgePointer = nullptr;
-        close(fdED);
-        sizeEP = fdED = 0;
+        if (edgePointer != nullptr) {
+            munmap(edgePointer, sizeEP);
+            edgePointer = nullptr;
+            close(fdED);
+            sizeEP = fdED = 0;
+            clos = true;
+        }
 
-        munmap(edgeValues, sizeEV);
-        edgeValues = nullptr;
-        close(fdEV);
-        sizeEV = fdEV = 0;
-        return true;
-    } else return false;
+        if (edgeValues != nullptr) {
+            munmap(edgeValues, sizeEV);
+            edgeValues = nullptr;
+            close(fdEV);
+            sizeEV = fdEV = 0;
+            clos = true;
+        }
+
+    return clos;
 }
 
 Graph::~Graph() {

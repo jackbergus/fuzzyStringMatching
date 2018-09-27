@@ -7,11 +7,11 @@
 #include <cmath>
 #include <functional>
 #include <unordered_set>
-#include "serializers/utils/NumberToString.h"
-#include "serializers/commons/secondary_memory/utils/Graph.h"
-#include "serializers/commons/globals.h"
-#include "serializers/commons/secondary_memory/queryresult.h"
-#include "serializers/commons/secondary_memory/JOINRESULT.h"
+#include "../serializers/utils/NumberToString.h"
+#include "../serializers/commons/secondary_memory/utils/Graph.h"
+#include "../serializers/commons/globals.h"
+#include "../serializers/commons/secondary_memory/queryresult.h"
+#include "../serializers/commons/secondary_memory/JOINRESULT.h"
 
 // ???
 struct id_dst {
