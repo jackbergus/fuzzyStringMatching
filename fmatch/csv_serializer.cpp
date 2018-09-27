@@ -94,12 +94,45 @@ void serializeCSVInFolder(std::string& folder) {
 
 #include <algorithm>
 #include <string>
+#include <cstring>
+#include <cstdio>
+
+extern "C" {
+#include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+}
+
+#define CURRENT_FOLDER  "/media/giacomo/Biggus/project_dir/data/hierarchies"
 
 int main(void) {
-    std::string stringa = "/media/giacomo/Biggus/project_dir/data/hierarchies/Weapon_csvDir";
-    std::string test1 = stringa + "/objectToMultipleStrings.csv";
+    DIR *dir;
+    struct dirent *entry;
 
-    serializeCSVInFolder(stringa);
+    if (!(dir = opendir(CURRENT_FOLDER)))
+        exit(0);
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR) {
+            char path[1024];
+            if (strcmp(entry->d_name, CURRENT_FOLDER) == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".") == 0)
+                continue;
+            snprintf(path, sizeof(path), "%s/%s", CURRENT_FOLDER, entry->d_name);
+            std::cout << path << std::endl;
+            std::string stringa{path};
+            serializeCSVInFolder(stringa);
+            //printf("%*s[%s]\n", CURRENT_FOLDER, "", entry->d_name);
+            //listdir(path, CURRENT_FOLDER + 2);
+        } else {
+            //printf("%*s- %s\n", CURRENT_FOLDER, "", entry->d_name);
+        }
+    }
+    closedir(dir);
+
+    //std::string stringa = "Weapon_csvDir";
+    //std::string test1 = stringa + "/objectToMultipleStrings.csv";
+
+    //serializeCSVInFolder(stringa);
     // --> How to search for longs
 
     /*

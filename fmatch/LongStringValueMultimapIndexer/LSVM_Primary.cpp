@@ -25,10 +25,6 @@ void LongStringValueMultimapIndexer_Primary::serialize(FILE *primaryIndex, FILE 
     while (it.hasNext()) {
         Node<LONG_NUMERIC, std::string>* element = it.disposeWhileIterating();
         LONG_NUMERIC key = it.getCurrentK();
-        if (key == 378219905){
-            std::cout << key << std::endl;
-        }
-
         // Writing all the longs as not appearing, that is stored at position zero
         // --> This approach would have quicker performances, via an O(1) access time, but I cannot "pay"
         //     for several gigabites of secondary memory. Therefore, even the longs will be sorted
