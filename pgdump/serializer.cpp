@@ -99,11 +99,11 @@ int main() {
     int i;
 
     // Edge information providing the content
-#ifdef SERIALIZE_EDGE
+//#ifdef SERIALIZE_EDGE
     FILE* edgeP = fopen64("edge_primary.bin", "w");
     FILE* edgeV = fopen64("edge_values.bin", "w");
     unsigned long offsetEdge = 0;
-#endif
+//#endif
     // While traversing the vertices
     while (std::getline(file, line)) {
         std::string edgeValueToSerialize{strpos(line.c_str(), element, 6)};
@@ -111,7 +111,7 @@ int main() {
         // Preserving the extracted string
         std::string original{edgeValueToSerialize};
 
-#ifndef NOOTHER
+//#ifndef NOOTHER
         // the to-be-parsed string has some issues to be parsed in C++, while it is perfectly recognized in Java.
         // Therefore, I have to do a twick, only to extract the relevant fields
         replace(edgeValueToSerialize, quoteb, quotee);
@@ -154,9 +154,9 @@ int main() {
             replace(rel, isRelationship, "");
 
             unsigned long edgeHash = relationshipId[rel];
-#endif
+//#endif
 
-#ifdef SERIALIZE_EDGE
+//#ifdef SERIALIZE_EDGE
             // writing the edge information into secondary memory
             fwrite(&offsetEdge, sizeof(offsetEdge), 1, edgeP);
             LONG_NUMERIC size = original.size()+1;
@@ -168,9 +168,9 @@ int main() {
                 //std::cout << rel << " -> " << std::to_string(edgeHash) << std::endl;
                 std::cout << "--" << std::endl;
             }
-#endif
+//#endif
 
-#ifndef NOOTHER
+//#ifndef NOOTHER
             {
                 Node<LONG_NUMERIC, edges_in_vertices> *n = outTree.insertKey(startId);
                 n->overflowList.emplace_back(edgeId, edgeHash, endId, 0);
@@ -180,16 +180,16 @@ int main() {
                 Node<LONG_NUMERIC, edges_in_vertices> *n = outTree.insertKey(endId);
                 n->overflowList.emplace_back(edgeId, edgeHash + 1, startId,0);
             }
-#endif
+//#endif
             //std::cout << startId << ", " << endId << ", " << start << ", " << end << std::endl;
             edgeId++;
             /*if (edgeId % 10000 == 0)
                 std::cout << (edgeId)/1000 << " k" << std::endl;*/
             if (edgeId/10000 == 0) {
-#ifdef SERIALIZE_EDGE
+//#ifdef SERIALIZE_EDGE
                 fflush(edgeP);
                 fflush(edgeV);
-#endif
+//#endif
             }
         /*} catch (...) {
             std::cout << edgeValueToSerialize << std::endl << std::endl;
@@ -197,13 +197,13 @@ int main() {
             continue;
         }*/
     }
-#ifdef SERIALIZE_EDGE
+//#ifdef SERIALIZE_EDGE
     fclose(edgeP);
     fclose(edgeV);
-#endif
-#ifdef NOOTHER
-    exit(0);
-#endif
+//#endif
+//#ifdef NOOTHER
+//    exit(0);
+//#endif
     std::cout << "\tFinally serializing the vertices" << std::endl;
 
     // No more hashing associated to the vertices
@@ -255,7 +255,7 @@ int main() {
     //fclose(hashF);
     fclose(secoF);
 
-#ifdef SERIALIZE_OFFSET
+//#ifdef SERIALIZE_OFFSET
     //FILE* primF = fopen64("vertex_secondary.bin", "w");
     std::ofstream csvVertexOffsetByString;
     csvVertexOffsetByString.open("nodes_name_to_offset.csv", std::ofstream::binary);
@@ -270,7 +270,7 @@ int main() {
     }
     csvVertexOffsetByString.close();
     //fclose(primF);
-#endif
+//#endif
 
 
 }
