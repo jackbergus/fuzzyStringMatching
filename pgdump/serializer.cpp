@@ -162,12 +162,12 @@ int main() {
             LONG_NUMERIC size = original.size()+1;
             fwrite(original.c_str(), size, 1, edgeV);
             offsetEdge += size;
-            if ((start == ("/c/en/weapon")) || (end == ("/c/en/weapon"))) {
+            /*if ((start == ("/c/en/weapon")) || (end == ("/c/en/weapon"))) {
                 //std::cout << "weapon id =" << startId << " == " << endId << std::endl;
-                std::cout << "edge id =" << edgeId   /* << " with value = " << original*/ << std::endl;
+                std::cout << "edge id =" << edgeId    << " with value = " << original << std::endl;
                 //std::cout << rel << " -> " << std::to_string(edgeHash) << std::endl;
                 std::cout << "--" << std::endl;
-            }
+            }*/
 //#endif
 
 //#ifndef NOOTHER
