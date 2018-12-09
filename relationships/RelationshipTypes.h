@@ -70,7 +70,7 @@ constexpr unsigned long isSuitableForHierarchyTraversing_MAP = (65536L | 131072L
 #define isSuitableForHierarchyTraversing(x)     (((unsigned long)x) & (isSuitableForHierarchyTraversing_MAP))
 
 constexpr unsigned long HierarchicalTraverseEdgeType_negativeMAP = (536870912L | 1073741824L | 2147483648L | 4294967296L | 2L | 1024L);
-#define SemanticEdge_isNegated(x)                    (((unsigned long)x) & (isSuitableForHierarchyTraversing_MAP))
+#define SemanticEdge_isNegated(x)                    ((bool)(((unsigned long)x) & (isSuitableForHierarchyTraversing_MAP)))
 #define SemanticEdge_isPositive(x)                   (!(SemanticEdge_isNegated(x)))
 
 /**
@@ -141,6 +141,9 @@ constexpr unsigned long HT_LEFT_TO_RIGHT_IMPL =
  */
 constexpr unsigned long HT_HAS_CONTENT_INSTANCE =
         static_cast<unsigned long>(RelationshipTypes::capital) | static_cast<unsigned long>(RelationshipTypes::HasA);
+
+
+
 #define CHT_CAUSED_BY       (HT_HAS_CONTENT_INSTANCE | HT_PARTOF)
 
 constexpr unsigned long HT_RIGHT_TO_LEFT_IMPL =
@@ -158,6 +161,9 @@ constexpr unsigned long HT_RIGHT_TO_LEFT_IMPL =
 constexpr unsigned long HT_NONE = 140737488355328L | 16384L;
 constexpr unsigned long CHT_NONE = (HT_NONE | HT_RIGHT_TO_LEFT_IMPL | HT_LEFT_TO_RIGHT_IMPL);
 
+/**
+ * Association between one element nad its inverse
+ */
 extern const std::map<unsigned long, unsigned long> inversionMap;
 
 

@@ -5,16 +5,24 @@
 #include "conceptnet_edge_deserialization.h"
 #include "../utils.h"
 
-
-// Pretty Printer
-ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &handler) {
-    os << "{ weight: " << handler.weight << "\n start: "
-       << handler.start << "\n end_: " << handler.end_ << "\n rel: " << handler.rel /*<< "\n uri: " << handler.uri*/
-       <</* "\n license: " << handler.license <<*/ "\n surfaceText: " << handler.surfaceText << "\n surfaceStart: "
-       << handler.surfaceStart << "\n surfaceEnd: " << handler.surfaceEnd << "\n dataset: " << handler.dataset
-       /*<< "\n features: [" << std::accumulate(handler.features.begin(), handler.features.end(), std::string("; "))*/ << "]}";
-    return os;
+/**
+ * Move constructor
+ * @param cc
+ */
+conceptnet_edge_deserialization::conceptnet_edge_deserialization(conceptnet_edge_deserialization &&cc) {
+    this->vEnd = cc.vEnd;
+    this->vStart = cc.vStart;
+    this->symmetry = cc.symmetry;
+    this->relType = cc.relType;
+    this->weight = cc.weight;
+    this->currentKey = cc.currentKey;
+    this->dataset = cc.dataset;
+    this->surfaceText = cc.surfaceText;
+    this->isObjectStarted = cc.isObjectStarted;
+    this->negated = cc.negated;
 }
+
+conceptnet_edge_deserialization::conceptnet_edge_deserialization() {}
 
 // Deserializer
 void conceptnet_edge_deserialization::readFromChars(const char *json, Reader &reader) {
@@ -36,9 +44,9 @@ bool conceptnet_edge_deserialization::Double(double d) {
 }
 bool conceptnet_edge_deserialization::String(const char *str, SizeType length, bool copy) {
     if (currentKey == "start") {
-        this->start = str;
+        this->vStart.id = str;
     } else if (currentKey == "end") {
-        this->end_ = str;
+        this->vEnd.id = str;
     } else if (currentKey == "rel") {
         this->rel = str;
     } else if (currentKey == "uri") {
@@ -50,9 +58,9 @@ bool conceptnet_edge_deserialization::String(const char *str, SizeType length, b
     } else if (currentKey == "surfaceText") {
         this->surfaceText = str;
     } else if (currentKey == "surfaceStart") {
-        this->surfaceStart = str;
+        this->vStart.surface = str;
     } else if (currentKey == "surfaceEnd") {
-        this->surfaceEnd = str;
+        this->vEnd.surface = str;
     } else if (currentKey == "dataset") {
         this->dataset = str;
     } else if (currentKey == "features") {
@@ -94,49 +102,49 @@ bool conceptnet_edge_deserialization::EndObject(SizeType memberCount) {
 }
 
 void conceptnet_edge_deserialization::finalizeObject() {
-    if (surfaceStart.empty()) {
-        surfaceStart = unrectify(start);
+    if (vStart.surface.empty()) {
+        vStart.surface = unrectify(vStart.id);
     }
-    if (surfaceEnd.empty()) {
-        surfaceEnd = unrectify(end_);
+    if (vEnd.surface.empty()) {
+        vEnd.surface = unrectify(vEnd.id);
     }
 
     size_t next = 0, pos = 0, count = 0, c = 0;
-    while ((next = start.find('/', pos)) != std::string::npos) {
+    while ((next = vStart.id.find('/', pos)) != std::string::npos) {
         if (count == 2) {
-            c = (start.find('/', pos+1));
+            c = (vStart.id.find('/', pos+1));
             bool test = c != std::string::npos;
-            std::string toret = next == start.length() ? "" :
-                                start.substr(pos+1,(test ? c-pos-1 : start.length()));
-            this->src_language = toret;
+            std::string toret = next == vStart.id.length() ? "" :
+                                vStart.id.substr(pos+1,(test ? c-pos-1 : vStart.id.length()));
+            this->vStart.language = toret;
         } else if (count == 4) {
-            c = (start.find('/', pos+1));
+            c = (vStart.id.find('/', pos+1));
             bool test = c != std::string::npos;
-            std::string toret = next == start.length() ? "" :
-                                start.substr(pos+1,(test ? c-pos-1 : start.length()));
-            this->src_senseLabel = start.substr(pos, next);
+            std::string toret = next == vStart.id.length() ? "" :
+                                vStart.id.substr(pos+1,(test ? c-pos-1 : vStart.id.length()));
+            this->vStart.sense = vStart.id.substr(pos, next);
         }
         count++;
-        pos = start.find('/', next+1);
+        pos = vStart.id.find('/', next+1);
     }
 
     next = 0, pos = 0, count = 0;
-    while ((next = end_.find('/', pos)) != std::string::npos) {
+    while ((next = vEnd.id.find('/', pos)) != std::string::npos) {
         if (count == 2) {
-            c = (end_.find('/', pos+1));
+            c = (vEnd.id.find('/', pos+1));
             bool test = c != std::string::npos;
-            std::string toret = next == end_.length() ? "" :
-                                end_.substr(pos+1,(test ? c-pos-1 : end_.length()));
-            this->dst_language = toret;
+            std::string toret = next == vEnd.id.length() ? "" :
+                                vEnd.id.substr(pos+1,(test ? c-pos-1 : vEnd.id.length()));
+            this->vEnd.language = toret;
         } else if (count == 4) {
-            c = (end_.find('/', pos+1));
+            c = (vEnd.id.find('/', pos+1));
             bool test = c != std::string::npos;
-            std::string toret = next == end_.length() ? "" :
-                                end_.substr(pos+1,(test ? c-pos-1 : end_.length()));
-            this->dst_senseLabel = toret;
+            std::string toret = next == vEnd.id.length() ? "" :
+                                vEnd.id.substr(pos+1,(test ? c-pos-1 : vEnd.id.length()));
+            this->vEnd.sense = toret;
         }
         count++;
-        pos = start.find('/', next+1);
+        pos = vStart.id.find('/', next+1);
     }
 
     std::string res{splitOnce(rel, slash, 10)};
@@ -145,4 +153,19 @@ void conceptnet_edge_deserialization::finalizeObject() {
     if (!isPreferredDirection_normal(relType)) {
         symmetry = true;
     }
+}
+
+ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &deserialization) {
+    os << "currentKey: " << deserialization.currentKey << " isObjectStarted: " << deserialization.isObjectStarted
+       << " symmetry: " << deserialization.symmetry << " negated: " << deserialization.negated << " vStart: "
+       << deserialization.vStart << " vEnd: " << deserialization.vEnd << " rel: " << deserialization.rel << " relType: "
+       << deserialization.relType << " surfaceText: " << deserialization.surfaceText << " dataset: "
+       << deserialization.dataset << " weight: " << deserialization.weight;
+    return os;
+}
+
+ostream &operator<<(ostream &os, const conceptnet_vertex &vertex) {
+    os << "id: " << vertex.id << " surface: " << vertex.surface << " language: " << vertex.language << " sense: "
+       << vertex.sense;
+    return os;
 }

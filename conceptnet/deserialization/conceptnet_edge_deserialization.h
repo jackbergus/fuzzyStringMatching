@@ -18,6 +18,17 @@ using namespace rapidjson;
 using namespace std;
 
 /**
+ * Vertex associated to the graph
+ */
+struct conceptnet_vertex {
+    std::string id;
+    std::string surface;
+    std::string language;
+    std::string sense;
+    friend ostream &operator<<(ostream &os, const conceptnet_vertex &vertex);
+};
+
+/**
  * This class describes the pieces of information associated to each element.
  */
 class conceptnet_edge_deserialization {
@@ -44,22 +55,31 @@ public:
 
     /// Arguments
 
-    double weight;
-    std::string start;
-    std::string end_;
+
+    /*std::string start;
+    std::string surfaceStart;
+    std::string src_language;
+    std::string src_senseLabel;*/
+    /*std::string end_;
+std::string surfaceEnd;
+std::string dst_language;
+std::string dst_senseLabel;*/
+
+
+    conceptnet_vertex vStart;
+    conceptnet_vertex vEnd;
     std::string rel;
     RelationshipTypes relType;
+    std::string surfaceText;
+    std::string dataset;
+    double weight;
+
     //std::string uri;
     //std::string license;
-    std::string surfaceText;
-    std::string surfaceStart;
-    std::string surfaceEnd;
-    std::string dataset;
     // legacy: ArrayList<ObjectNode> sources;
     //std::vector<std::string> features;
 
     // Pretty Printer
-    friend ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &handler);
 
     // Parser's event hanlders / triggers:
     bool Null();
@@ -77,11 +97,10 @@ public:
     bool StartArray();
     bool EndArray(SizeType elementCount);
 
+    friend ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &deserialization);
 
-    std::string src_language;
-    std::string src_senseLabel;
-    std::string dst_language;
-    std::string dst_senseLabel;
+    conceptnet_edge_deserialization();;
+    conceptnet_edge_deserialization(conceptnet_edge_deserialization&& cc);
 };
 
 // Java backward compatibility macros. In this way I map the new classes into the old ones without the cost of re-mapping an object.
@@ -94,14 +113,14 @@ public:
 #define EDGE_REL_LABEL(x)           EDGE_ID(x)
 
 // Some edge rewriting macros that are unaware (_U*) of whether the edge is symmetrical or not
-#define EDGE_USTART_ID(x)            (((conceptnet_edge_deserialization*)x)->start)
-#define EDGE_USTART_POS(x)           (((conceptnet_edge_deserialization*)x)->src_senseLabel)
-#define EDGE_USTART_LAN(x)           (((conceptnet_edge_deserialization*)x)->src_language)
-#define EDGE_USTART_LABEL(x)         (((conceptnet_edge_deserialization*)x)->surfaceStart)
-#define EDGE_UEND_ID(x)            (((conceptnet_edge_deserialization*)x)->end_)
-#define EDGE_UEND_LAN(x)           (((conceptnet_edge_deserialization*)x)->dst_language)
-#define EDGE_UEND_POS(x)           (((conceptnet_edge_deserialization*)x)->dst_senseLabel)
-#define EDGE_UEND_LABEL(x)         (((conceptnet_edge_deserialization*)x)->surfaceEnd)
+#define EDGE_USTART_ID(x)            (((conceptnet_edge_deserialization*)x)->vStart.id)
+#define EDGE_USTART_POS(x)           (((conceptnet_edge_deserialization*)x)->vStart.semse)
+#define EDGE_USTART_LAN(x)           (((conceptnet_edge_deserialization*)x)->vStart.language)
+#define EDGE_USTART_LABEL(x)         (((conceptnet_edge_deserialization*)x)->vStart.surface)
+#define EDGE_UEND_ID(x)            (((conceptnet_edge_deserialization*)x)->vEnd.id)
+#define EDGE_UEND_LAN(x)           (((conceptnet_edge_deserialization*)x)->vEnd.language)
+#define EDGE_UEND_POS(x)           (((conceptnet_edge_deserialization*)x)->vEnd.sense)
+#define EDGE_UEND_LABEL(x)         (((conceptnet_edge_deserialization*)x)->vEnd.surface)
 #define EDGE_RELTYPE(x)         (((conceptnet_edge_deserialization*)x)->relType)
 
 #define EDGE_START_ID(x)            (EDGE_ISSYMMETRY(x) ? EDGE_UEND_ID(x) : EDGE_USTART_ID(x))

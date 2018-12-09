@@ -14,6 +14,9 @@ const std::map<unsigned long, unsigned long> inversionMap = {
         {HT_LEFT_TO_RIGHT_IMPL, HT_RIGHT_TO_LEFT_IMPL}
 };
 
+/**
+ * Map associating to each string representation the associated enum value
+ */
 const std::map<std::string, unsigned long> enumMap = {
         {"Antonym", 2L},
         {"AtLocation", 4L},
