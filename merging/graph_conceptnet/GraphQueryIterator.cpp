@@ -50,3 +50,12 @@ conceptnet_edge_deserialization GraphQueryIterator::operator*() const {
     returned.readFromChars(g->resolveEdgeValue(vec[i].edgeId), g->reader);
     return returned;
 }
+
+GraphQueryIterator::GraphQueryIterator(const GraphQueryIterator &x) {
+    this->v = x.v;
+    this->n = x.n;
+    this->vec = x.vec;
+    this->i = x.i;
+    this->g = x.g;
+    this->bitmap = x.bitmap;
+}

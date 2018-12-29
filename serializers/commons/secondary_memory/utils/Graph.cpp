@@ -11,7 +11,6 @@ extern "C" {
 
 //const char* VERTICES = "vertex_hashing.bin";
 const char* SECONDARY = "vertex_values.bin";
-
 const char* EDGE_PRIMARY = "edge_primary.bin";
 const char* EDGE_VALUES  = "edge_values.bin";
 //const boost::filesystem::path VERTICES{"values.bin"};

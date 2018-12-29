@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(inconsistency)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-fconstexpr-depth=5023 -O2 -m64")
+set(CMAKE_CXX_FLAGS "-fconstexpr-depth=5023 -m64")
 include_directories(lib/rapidjson/include)
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
-add_executable(inconsistency main.cpp relationships/RelationshipTypes.h internal_state/InternalState.cpp internal_state/InternalState.h conceptnet/deserialization/conceptnet_edge_deserialization.cpp conceptnet/deserialization/conceptnet_edge_deserialization.h conceptnet/utils.cpp conceptnet/utils.h relationships/RelationshipTypes.cpp serializers/commons/secondary_memory/utils/Graph.cpp serializers/utils/mmapFile.cpp merging/graph_conceptnet/GraphQueryIterator.cpp)
+add_executable(inconsistency main.cpp relationships/RelationshipTypes.h internal_state/InternalState.cpp internal_state/InternalState.h merging/conceptnet/deserialization/conceptnet_edge_deserialization.cpp merging/conceptnet/deserialization/conceptnet_edge_deserialization.h merging/conceptnet/utils.cpp merging/conceptnet/utils.h relationships/RelationshipTypes.cpp serializers/commons/secondary_memory/utils/Graph.cpp serializers/utils/mmapFile.cpp merging/graph_conceptnet/GraphQueryIterator.cpp merging/conceptnet/ConceptNet5Dumps.cpp merging/conceptnet/ConceptNet5Dumps.h merging/SplitStringIterator.cpp merging/SplitStringIterator.h numeric/compares.cpp datasets/NELL/NELL.cpp datasets/NELL/NELL.h datasets/ICEWS/ICEWSPlace.h datasets/ICEWS/ICEWSPlace.cpp datasets/ICEWS/ICEWSArgument.cpp datasets/ICEWS/ICEWSArgument.h datasets/ICEWS/ICEWS.cpp datasets/ICEWS/ICEWS.h datasets/NELL/NELLArgument.cpp datasets/NELL/NELLArgument.h datasets/Phoenix/PhoenixTime.cpp datasets/Phoenix/PhoenixTime.h datasets/Phoenix/PhoenixArgument.cpp datasets/Phoenix/PhoenixArgument.h datasets/Phoenix/PhoenixPlace.cpp datasets/Phoenix/PhoenixPlace.h datasets/Phoenix/Phoenix.cpp datasets/Phoenix/Phoenix.h datasets/GDELT/GDELTPlace.cpp datasets/GDELT/GDELTPlace.h datasets/GDELT/GDELTTime.cpp datasets/GDELT/GDELTTime.h datasets/GDELT/GDELTArgument.cpp datasets/GDELT/GDELTArgument.h datasets/GDELT/GDELT.cpp datasets/GDELT/GDELT.h datasets/GDELT/GDELTRelation.cpp datasets/GDELT/GDELTRelation.h datasets/NELL/NELLRelation.cpp datasets/NELL/NELLRelation.h datasets/helpers/Helpers.cpp datasets/helpers/Helpers.h fromJava/trimmers.cpp fromJava/trimmers.h numeric/ProgressBar.cpp numeric/ProgressBar.h merging/csv_istream.cpp merging/csv_istream.h merging/CSVIterator.cpp merging/CSVIterator.h serializers/Streamers.cpp serializers/Streamers.h)
 target_include_directories(inconsistency PUBLIC ${LEMON_INCLUDE_DIR})
 target_link_libraries(inconsistency PUBLIC ${LEMON_LIBRARIES})

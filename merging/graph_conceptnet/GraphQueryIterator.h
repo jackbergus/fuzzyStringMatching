@@ -9,7 +9,7 @@ class Graph;
 
 #include "../../serializers/utils/mmapFile.h"
 #include "../../serializers/commons/secondary_memory/primary_index.h"
-#include "../../conceptnet/deserialization/conceptnet_edge_deserialization.h"
+#include "../../merging/conceptnet/deserialization/conceptnet_edge_deserialization.h"
 
 //This adapter increments the Vector::const_iterator, and returns only the field named `value`
 //in order to hide the whiole `struct elem`
@@ -24,6 +24,7 @@ class GraphQueryIterator
 
 public:
     conceptnet_edge_deserialization handler;
+
     /**
      * Starting pointer for the query iterator.
      * @param graph         Graph over which perform the adjacency list iteration over the edge hashing
@@ -40,6 +41,8 @@ public:
      * @param ingoing 
      */
     GraphQueryIterator(Graph* graph, LONG_NUMERIC node, bool ingoing);
+
+    GraphQueryIterator(const GraphQueryIterator& x);
 
     bool operator!= (const GraphQueryIterator& other) const;
 

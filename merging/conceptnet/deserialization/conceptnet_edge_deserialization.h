@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "rapidjson/reader.h"
-#include "../../relationships/RelationshipTypes.h"
+#include "../../../relationships/RelationshipTypes.h"
 #include <iostream>
 #include <stack>
 #include <string>
