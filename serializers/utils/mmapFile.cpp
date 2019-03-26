@@ -3,6 +3,7 @@
 //
 
 #include "mmapFile.h"
+#include "../commons/structure.h"
 
 void* mmapFile(std::string file, unsigned long* size, int* fd) {
     {

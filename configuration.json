@@ -1,3 +1,8 @@
 {
-  "cameo_event_code": "/home/giacomo/Scrivania/CAMEO_ACTORS/CAMEO.eventcodes.txt"
+  "cameo_event_code": "/home/giacomo/Scrivania/CAMEO_ACTORS/CAMEO.eventcodes.txt",
+  "idToOffsetHandler": "/media/giacomo/Biggus/project_dir/data/json/idToOffset.json",
+  "objectToMultipleStrings": "/media/giacomo/Biggus/project_dir/data/json/id_to_strings/objectToMultipleStrings.json",
+  "hierarchiesForFuzzyMatch": "/media/giacomo/Biggus/project_dir/data/hierarchies",
+  "fuzzyMatchThreshold": 0.6,
+  "fuzzyMatchTopK": 3
 }

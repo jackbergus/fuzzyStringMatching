@@ -61,3 +61,12 @@ std::string unrectify(std::string& x) {
         return s;
     }
 }
+
+std::string extract_basic_id(std::string &generic_id) {
+    long pos = strpos((char*)generic_id.c_str(), (char*)slash.c_str(),4);
+    if (pos >=  0) {
+        return generic_id.substr(0, pos);
+    } else {
+        return generic_id;
+    }
+}

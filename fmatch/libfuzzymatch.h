@@ -12,7 +12,7 @@
 #include "../fromJava/classes.h"
 #include "../numeric/compares.h"
 #include "../serializers/commons/structure.h"
-#include "../rbtree/rbtree.h"
+#include "../utils/rbtree/rbtree.h"
 #include "../serializers/commons/structure.h"
 #include "../serializers/utils/mmapFile.h"
 #include "../algorithms/binsearch.h"

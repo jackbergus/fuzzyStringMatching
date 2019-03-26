@@ -17,16 +17,37 @@
 using namespace rapidjson;
 using namespace std;
 
+#if 0
 /**
  * Vertex associated to the graph
  */
 struct conceptnet_vertex {
+    /**
+     * Id in ConceptNet shape, that is /<domain>/<language>/<rect_term>[/<sense>]
+     */
     std::string id;
+
+    /**
+     * String representation associated to the term.
+     */
     std::string surface;
+
+    /**
+     * Language where the term is used
+     */
     std::string language;
+
+    /**
+     * The sense identifies the usage associated to the element, that is whether this is a noun, a verb, or whatever else
+     */
     std::string sense;
+
+    conceptnet_vertex() = default;
+    conceptnet_vertex(std::string& xid);
+    void finalizeObject();
     friend ostream &operator<<(ostream &os, const conceptnet_vertex &vertex);
 };
+#endif
 
 /**
  * This class describes the pieces of information associated to each element.
@@ -56,18 +77,13 @@ public:
     /// Arguments
 
 
-    /*std::string start;
-    std::string surfaceStart;
-    std::string src_language;
-    std::string src_senseLabel;*/
-    /*std::string end_;
-std::string surfaceEnd;
-std::string dst_language;
-std::string dst_senseLabel;*/
-
-
-    conceptnet_vertex vStart;
-    conceptnet_vertex vEnd;
+    /**
+     * Head id for the soruce vertex (removes the sense information)
+     */
+    std::string vStart;/**
+     * Head id for the target vertex (removes the sense information)
+     */
+    std::string vEnd;
     std::string rel;
     RelationshipTypes relType;
     std::string surfaceText;
@@ -99,7 +115,7 @@ std::string dst_senseLabel;*/
 
     friend ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &deserialization);
 
-    conceptnet_edge_deserialization();;
+    conceptnet_edge_deserialization();
     conceptnet_edge_deserialization(conceptnet_edge_deserialization&& cc);
 };
 

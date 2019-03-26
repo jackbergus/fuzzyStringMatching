@@ -5,7 +5,9 @@
 #include <vector>
 #include <numeric>
 
+#include "merging/conceptnet/utils.h"
 #include "rapidjson/reader.h"
+#include "rapidjson/filereadstream.h"
 using namespace rapidjson;
 
 #include "relationships/RelationshipTypes.h"
@@ -19,13 +21,15 @@ using namespace rapidjson;
 #include "datasets/Phoenix/Phoenix.h"
 #include "numeric/ProgressBar.h"
 
+#include "utils/fixed_bimap.h"
+
 #include <unordered_map>
 #include <iostream>
 #include <lemon/list_graph.h>
 
+#include <unordered_set>
 #include <sstream>
 #include <string>
-#include <unordered_map>
 
 void test_json_edgeparser() {
     const char json[] = "{\"end\": \"/c/ar/صد\", \"rel\": \"/r/FormOf\", \"uri\": \"/a/[/r/FormOf/,/c/ar/نصدد/v/,/c/ar/صد/]\", \"start\": \"/c/ar/نصدد/v\", \"weight\": 1.0, \"dataset\": \"/d/wiktionary/en\", \"license\": \"cc:by-sa/4.0\", \"sources\": [{\"process\":"
@@ -48,159 +52,16 @@ void test_lemon() {
          << "and " << lemon::countArcs(g) << " arc." << std::endl;
 }
 
-/**
- * Process allowing to read NELL data.
- * Each relationship carries out also is-a relationships.
- *
- * NELL provies an ontology which provies a skeleton of a is-a hierarchy
- */
-void read_nell_data() {
-    ProgressBar pb{32687353.0};
-    std::map<std::string, NELL> map;
-    std::unordered_map<std::string, std::set<std::string>> string_candidates;
-    std::ifstream infile("/media/giacomo/80CEAABECEAAABBA/Data/NELL/NELL.08m.1110.cesv.csv");
-    std::ifstream infile2("/media/giacomo/80CEAABECEAAABBA/Data/NELL/NELL.08m.1115.esv.csv");
-    std::string line;
-    bool  skipFirst = true;
-    LONG_NUMERIC id = 0, c = 0;
-
-    //LONG_NUMERIC MAX_DEBUG = 200, c = 0;
-    while (std::getline(infile, line) /*&& (c < MAX_DEBUG)*/) {
-        if (!skipFirst) {
-            NELL nell{id++, line};
-            std::ostringstream ss;
-            ss << nell;
-            std::string sstring = ss.str();
-            for (std::string &x : nell.src.literalStrings) {
-                string_candidates[nell.src.best_string].insert(x);
-            }
-            nell.src.literalStrings.clear();
-            auto it = map.insert(std::make_pair(sstring, nell));
-            if (!it.second) {
-                it.first->second.updateWith(nell);
-            }
-            c++;
-        } else {
-            skipFirst = false;
-        }
-        pb.update(c);
-    }
-
-    pb.reset();
-    while (std::getline(infile2, line) /*&& (c < MAX_DEBUG)*/) {
-        if (!skipFirst) {
-            NELL nell{id++, line};
-            std::ostringstream ss;
-            ss << nell;
-            std::string sstring = ss.str();
-            for (std::string &x : nell.src.literalStrings) {
-                string_candidates[nell.src.best_string].insert(x);
-            }
-            nell.src.literalStrings.clear();
-            auto it = map.insert(std::make_pair(sstring, nell));
-            if (!it.second) {
-                it.first->second.updateWith(nell);
-            }
-            c++;
-        } else {
-            skipFirst = false;
-        }
-        pb.update(c);
-    }
-
-    {
-        std::ofstream file{"/media/giacomo/80CEAABECEAAABBA/Data/NELL/nell.csv"};
-        for (auto it = map.begin(); it != map.cend(); it++) {
-            it->second.getAdditionalElements(file);
-            it->second.getEdge(file);
-        }
-    }
-    {
-        std::ofstream file{"/media/giacomo/80CEAABECEAAABBA/Data/NELL/nell_disambiguations.csv"};
-        for (auto it = string_candidates.begin(); it != string_candidates.end(); it++) {
-            std::ostringstream oss;
-            file << it->first << "\t";
-            if (!it->second.empty()) {
-                // Convert all but the last element to avoid a trailing ","
-                std::copy(it->second.begin(), it->second.end(),
-                          std::ostream_iterator<std::string>(oss, "; "));
-            }
-            file << "[" << oss.str() << "]"  << std::endl;
-        }
-    }
-}
-
-void read_icews_data() {
-    std::unordered_map<std::string, std::set<std::string>> disambiguations;
-    std::map<std::string, ICEWS> map;
-    std::ifstream infile("/media/giacomo/80CEAABECEAAABBA/Data/ICEWS/Events/20181004-icews-events.tab");
-    std::string line;
-    bool  skipFirst = true;
-    LONG_NUMERIC id = 0;
-    LONG_NUMERIC MAX_DEBUG = 200, c = 0;
-    while (std::getline(infile, line) && (c < MAX_DEBUG)) {
-        if (!skipFirst) {
-            ICEWS nell{line};
-            std::ostringstream ss;
-            ss << nell;
-            std::string sstring = ss.str();
-            auto it = map.insert(std::make_pair(sstring, nell));
-        } else {
-            skipFirst = false;
-        }
-    }
-    for (auto it = map.begin(); it != map.cend(); it++) {
-        std::cout << it->second << std::endl;
-    }
-}
-
-void phoenix() {
-    std::ifstream infile("/media/giacomo/80CEAABECEAAABBA/Data/Phoenix/PhoenixFBIS_1995-2004.csv");
-    std::string line;
-    std::istringstream sss;
-    bool  skipFirst = true;
-    while (std::getline(infile, line)) {
-        if (skipFirst) {
-            skipFirst = false;
-        } else {
-            sss.str(line);
-            CSVIterator it{sss};
-            Phoenix p;
-            p.load(it);
-            std::cout << p << std::endl;
-            sss.clear();
-        }
-    }
-}
-
-#include "internal_state/InternalState.h"
-
-void gdelt_example() {
-    InternalState internalState;
-    internalState.load("configuration.json");
-    std::ifstream infile("/media/giacomo/80CEAABECEAAABBA/Data/GDELT/gdelt20/all/201303.csv");
-    std::string line;
-    while (std::getline(infile, line)) {
-        SplitStringIterator it{line, "\t"};
-        GDELT gdelt;
-        gdelt.load(it, true);
-        gdelt.relation.event_name = internalState.helpers.cameo_event_code_to_representation[gdelt.relation.event_code];
-        if ((!gdelt.src.name.empty()) && (!gdelt.dst.name.empty()) && (gdelt.relation.event_rootcode == "19"))
-            std::cout << gdelt << std::endl;
-        line.clear();
-    }
-}
-
+// TODO: able to list all the hierarchies within the folder
+// TODO: GraphQueryIterator is the class that uses "offsets" to refer to vertex ids, and returs parsed edges as the output of the iteration process. Therefore, use multiple possible LONGS --> merge the iterators together
 int main() {
-    /*FuzzyMatch fm{"/media/giacomo/Biggus/project_dir/data/hierarchies"};
-    std::string dim{"Weapon"};
-    std::string obj{"surface to   air missile"};
+    // Loading the translation offset/id
+    /*// Result map
     TreeMultimap<double, LONG_NUMERIC> result;
+    // Performing the query
+    std::cout << "Fuzzy matching" << std::endl  << std::endl;
     fm.fuzzyMatch(dim, 0.6, 3, obj, result);
     for (auto it = result.rbegin(); it != result.rend(); it++) {
-        std::cout << it->first << " - " << it->second << std::endl;
+        std::cout << it->first << " - " << non_3basicid_to_offset.getKey(it->second) << std::endl;
     }*/
-    gdelt_example();
-
-    /**/
 }

@@ -44,9 +44,11 @@ bool conceptnet_edge_deserialization::Double(double d) {
 }
 bool conceptnet_edge_deserialization::String(const char *str, SizeType length, bool copy) {
     if (currentKey == "start") {
-        this->vStart.id = str;
+        std::string s{str, length};
+        this->vStart = extract_basic_id(s);
     } else if (currentKey == "end") {
-        this->vEnd.id = str;
+        std::string s{str, length};
+        this->vEnd = extract_basic_id(s);
     } else if (currentKey == "rel") {
         this->rel = str;
     } else if (currentKey == "uri") {
@@ -57,15 +59,16 @@ bool conceptnet_edge_deserialization::String(const char *str, SizeType length, b
         //this->license = str;
     } else if (currentKey == "surfaceText") {
         this->surfaceText = str;
-    } else if (currentKey == "surfaceStart") {
+    } else if (currentKey == "dataset") {
+        this->dataset = str;
+    }
+    /*else if (currentKey == "surfaceStart") {
         this->vStart.surface = str;
     } else if (currentKey == "surfaceEnd") {
         this->vEnd.surface = str;
-    } else if (currentKey == "dataset") {
-        this->dataset = str;
-    } else if (currentKey == "features") {
+    }*/  /*else if (currentKey == "features") {
         //this->features.emplace_back(str);
-    }
+    }*/
     //cout << "String(" << str << ", " << length << ", " << boolalpha << copy << ")" << endl;
     return true;
 }
@@ -102,51 +105,6 @@ bool conceptnet_edge_deserialization::EndObject(SizeType memberCount) {
 }
 
 void conceptnet_edge_deserialization::finalizeObject() {
-    if (vStart.surface.empty()) {
-        vStart.surface = unrectify(vStart.id);
-    }
-    if (vEnd.surface.empty()) {
-        vEnd.surface = unrectify(vEnd.id);
-    }
-
-    size_t next = 0, pos = 0, count = 0, c = 0;
-    while ((next = vStart.id.find('/', pos)) != std::string::npos) {
-        if (count == 2) {
-            c = (vStart.id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == vStart.id.length() ? "" :
-                                vStart.id.substr(pos+1,(test ? c-pos-1 : vStart.id.length()));
-            this->vStart.language = toret;
-        } else if (count == 4) {
-            c = (vStart.id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == vStart.id.length() ? "" :
-                                vStart.id.substr(pos+1,(test ? c-pos-1 : vStart.id.length()));
-            this->vStart.sense = vStart.id.substr(pos, next);
-        }
-        count++;
-        pos = vStart.id.find('/', next+1);
-    }
-
-    next = 0, pos = 0, count = 0;
-    while ((next = vEnd.id.find('/', pos)) != std::string::npos) {
-        if (count == 2) {
-            c = (vEnd.id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == vEnd.id.length() ? "" :
-                                vEnd.id.substr(pos+1,(test ? c-pos-1 : vEnd.id.length()));
-            this->vEnd.language = toret;
-        } else if (count == 4) {
-            c = (vEnd.id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == vEnd.id.length() ? "" :
-                                vEnd.id.substr(pos+1,(test ? c-pos-1 : vEnd.id.length()));
-            this->vEnd.sense = toret;
-        }
-        count++;
-        pos = vStart.id.find('/', next+1);
-    }
-
     std::string res{splitOnce(rel, slash, 10)};
     relType = res.empty() ? RelationshipTypes::ExternalURL : static_cast<RelationshipTypes>(enumMap.at(res));
     negated = res.empty() ? false : SemanticEdge_isNegated(relType);
@@ -155,12 +113,12 @@ void conceptnet_edge_deserialization::finalizeObject() {
     }
 }
 
-ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &deserialization) {
-    os << "currentKey: " << deserialization.currentKey << " isObjectStarted: " << deserialization.isObjectStarted
-       << " symmetry: " << deserialization.symmetry << " negated: " << deserialization.negated << " vStart: "
-       << deserialization.vStart << " vEnd: " << deserialization.vEnd << " rel: " << deserialization.rel << " relType: "
-       << deserialization.relType << " surfaceText: " << deserialization.surfaceText << " dataset: "
-       << deserialization.dataset << " weight: " << deserialization.weight;
+ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &self) {
+    os << "currentKey: " << self.currentKey << " isObjectStarted: " << self.isObjectStarted
+       << " symmetry: " << self.symmetry << " negated: " << self.negated << " vStart: "
+       << self.vStart << " vEnd: " << self.vEnd << " rel: " << self.rel << " relType: "
+       << self.relType << " surfaceText: " << self.surfaceText << " dataset: "
+       << self.dataset << " weight: " << self.weight;
     return os;
 }
 
@@ -168,4 +126,34 @@ ostream &operator<<(ostream &os, const conceptnet_vertex &vertex) {
     os << "id: " << vertex.id << " surface: " << vertex.surface << " language: " << vertex.language << " sense: "
        << vertex.sense;
     return os;
+}
+
+
+void conceptnet_vertex::finalizeObject() {
+    if (surface.empty()) {
+        surface = unrectify(id);
+    }
+
+    size_t next = 0, pos = 0, count = 0, c = 0;
+    while ((next = id.find('/', pos)) != std::string::npos) {
+        if (count == 2) {
+            c = (id.find('/', pos+1));
+            bool test = c != std::string::npos;
+            std::string toret = next == id.length() ? "" :
+                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
+            this->language = toret;
+        } else if (count == 4) {
+            c = (id.find('/', pos+1));
+            bool test = c != std::string::npos;
+            std::string toret = next == id.length() ? "" :
+                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
+            this->sense = id.substr(pos, next);
+        }
+        count++;
+        pos = id.find('/', next+1);
+    }
+}
+
+conceptnet_vertex::conceptnet_vertex(std::string& idx) : id{idx} {
+    finalizeObject();
 }

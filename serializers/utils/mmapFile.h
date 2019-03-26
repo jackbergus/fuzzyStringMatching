@@ -17,4 +17,9 @@ extern "C" {
 
 void* mmapFile(std::string file, unsigned long* size, int* fd);
 
+#define UNSAFE_FILE_SIZE(file, val) { \
+    std::ifstream in((file), std::ifstream::ate | std::ifstream::binary);\
+    (val) = in.tellg();\
+}
+
 #endif //PROJECT_MMAPFILE_H

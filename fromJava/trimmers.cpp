@@ -19,3 +19,20 @@ std::string rtrim(const std::string &s) {
 std::string trim(const std::string &s) {
     return rtrim(ltrim(s));
 }
+
+int strpos(char *haystack, char *needle, int nth) {
+    char *res = haystack;
+    for(int i = 1; i <= nth; i++)
+    {
+        res = strstr(res, needle);
+        if (!res)
+            return -1;
+        else if(i != nth)
+            res++;
+    }
+    return res - haystack;
+}
+
+std::string to_string(const std::string &value) {
+    return value;
+}

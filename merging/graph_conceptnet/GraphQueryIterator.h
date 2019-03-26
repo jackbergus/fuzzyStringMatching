@@ -26,7 +26,7 @@ public:
     conceptnet_edge_deserialization handler;
 
     /**
-     * Starting pointer for the query iterator.
+     * Starting pointer (begin) for the query iterator.
      * @param graph         Graph over which perform the adjacency list iteration over the edge hashing
      * @param node          Vertex from which traverse the graph
      * @param ingoing       Select whether we want to perform an ingoing or an outgoing traversal
@@ -35,7 +35,7 @@ public:
     GraphQueryIterator (Graph* graph, LONG_NUMERIC node, bool ingoing, unsigned long relBitMap);
 
     /**
-     * Empty pointer for the given element
+     * Empty (or end) pointer for the given element
      * @param graph 
      * @param node 
      * @param ingoing 

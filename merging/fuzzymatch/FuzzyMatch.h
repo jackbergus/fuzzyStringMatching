@@ -12,9 +12,13 @@
 #include "../../fmatch/FuzzyMatch_FDContainer.h"
 
 
+/**
+ * Performs the fuzzy match over the binary indices optimizing the fuzzy matching access. Requires that the indices
+ * are stored in primary memory and are with a non-mutable representation.
+ */
 class FuzzyMatch {
 
-
+    bool loaded;
     std::string baseDir;
     std::unordered_map<std::string, FuzzyMatch_FDContainer> map;
     void openDimension(std::string& dimension);
@@ -24,13 +28,24 @@ class FuzzyMatch {
 
 public:
     /**
-     * Performs the fuzzy match over the binary indices optimizing the fuzzy matching access
+     * Straightforwardly associates the directory name at the creation process
      * @param directory
      */
-    FuzzyMatch(std::string directory);
+    explicit FuzzyMatch(std::string directory);
 
     /**
-     * Performs the fuzzy matching of a term on top of a hierarchy
+     * Delaying the
+     * @return
+     */
+    FuzzyMatch() = default;
+
+
+    void load(std::string directory);
+
+    /**
+     * Performs the fuzzy matching of a term on top of a hierarchy. No fuzzy match will be performed if the object is
+     * not associated to a folder.
+     *
      * @param dimension
      * @param threshold
      * @param topk
@@ -38,22 +53,11 @@ public:
      * @param result
      */
     void fuzzyMatch(std::string& dimension, double threshold, int topk, String& objectString,
-                    TreeMultimap<double, LONG_NUMERIC> &result) {
-        if (map.find(dimension) == map.cend())
-            openDimension(dimension);
-        map[dimension].fuzzyMatch(threshold, topk, objectString, result);
-    }
+                    TreeMultimap<double, LONG_NUMERIC> &result);
 
-    void containsExactTerm(std::string& dimension, std::string& term, ArrayList<LONG_NUMERIC>& result) {
-        if (map.find(dimension) == map.cend())
-            openDimension(dimension);
-        map[dimension].containsExactTerm(term, result);
-    }
+    void containsExactTerm(std::string& dimension, std::string& term, ArrayList<LONG_NUMERIC>& result);
 
-    ~FuzzyMatch() {
-        // Explicitely clearing the map
-        map.clear();
-    }
+    ~FuzzyMatch();
 
 };
 

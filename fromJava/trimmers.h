@@ -9,9 +9,16 @@
 #include <string>
 #include <algorithm>
 
+extern "C" {
+#include <string.h>
+};
+
 std::string ltrim(const std::string& s);
 std::string rtrim(const std::string& s);
 std::string trim(const std::string& s);
+int strpos(char *haystack, char *needle, int nth);
+
+std::string to_string(const std::string& value);
 
 
 #endif //INCONSISTENCY_TRIMMERS_H

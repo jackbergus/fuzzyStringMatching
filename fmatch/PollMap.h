@@ -57,7 +57,7 @@ public:
      * @param topK  If the integer is negative, then we preserve all the possible results
      */
     PollMap(int topK) {
-        topK = topK <= 0 ? std::numeric_limits<int>::max() : topK;
+        this->topK = (topK <= 0) ? std::numeric_limits<int>::max() : topK;
     }
 
     void add(K key, V value) {
