@@ -2,6 +2,7 @@
 // Created by giacomo on 17/10/18.
 //
 
+#include "conceptnet5_vertex.h"
 #include "conceptnet_edge_deserialization.h"
 #include "../utils.h"
 
@@ -122,38 +123,9 @@ ostream &operator<<(ostream &os, const conceptnet_edge_deserialization &self) {
     return os;
 }
 
-ostream &operator<<(ostream &os, const conceptnet_vertex &vertex) {
-    os << "id: " << vertex.id << " surface: " << vertex.surface << " language: " << vertex.language << " sense: "
-       << vertex.sense;
+ostream &operator<<(ostream &os, const conceptnet5_vertex &vertex) {
+    os << "id: " << vertex.id <<  " language: " << vertex.language ;
     return os;
 }
 
 
-void conceptnet_vertex::finalizeObject() {
-    if (surface.empty()) {
-        surface = unrectify(id);
-    }
-
-    size_t next = 0, pos = 0, count = 0, c = 0;
-    while ((next = id.find('/', pos)) != std::string::npos) {
-        if (count == 2) {
-            c = (id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == id.length() ? "" :
-                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
-            this->language = toret;
-        } else if (count == 4) {
-            c = (id.find('/', pos+1));
-            bool test = c != std::string::npos;
-            std::string toret = next == id.length() ? "" :
-                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
-            this->sense = id.substr(pos, next);
-        }
-        count++;
-        pos = id.find('/', next+1);
-    }
-}
-
-conceptnet_vertex::conceptnet_vertex(std::string& idx) : id{idx} {
-    finalizeObject();
-}

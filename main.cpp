@@ -21,6 +21,8 @@ using namespace rapidjson;
 #include "datasets/Phoenix/Phoenix.h"
 #include "numeric/ProgressBar.h"
 
+#include "merging/fuzzymatch/FuzzyMatchSerializer.h"
+
 #include "utils/fixed_bimap.h"
 
 #include <unordered_map>

@@ -6,8 +6,11 @@
 
 #include <unordered_set>
 #include <algorithm>
+#include <iostream>
 
-conceptnet5_vertex::conceptnet5_vertex(std::string x) : id{x} {}
+conceptnet5_vertex::conceptnet5_vertex(std::string x) : id{x} {
+    std::cerr << "ERROR: do I have to call dedup or finalizeObject()?";
+}
 
 void conceptnet5_vertex::dedup() {
     {
@@ -43,3 +46,30 @@ void conceptnet5_vertex::dedup() {
         }
     }
 }
+
+
+void conceptnet5_vertex::finalizeObject() {
+    if (surfaces.empty()) {
+        surfaces.emplace_back(unrectify(id));
+    }
+
+    size_t next = 0, pos = 0, count = 0, c = 0;
+    while ((next = id.find('/', pos)) != std::string::npos) {
+        if (count == 2) {
+            c = (id.find('/', pos+1));
+            bool test = c != std::string::npos;
+            std::string toret = next == id.length() ? "" :
+                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
+            this->language = toret;
+        } else if (count == 4) {
+            c = (id.find('/', pos+1));
+            bool test = c != std::string::npos;
+            std::string toret = next == id.length() ? "" :
+                                id.substr(pos+1,(test ? c-pos-1 : id.length()));
+            this->senses.emplace_back(id.substr(pos, next));
+        }
+        count++;
+        pos = id.find('/', next+1);
+    }
+}
+

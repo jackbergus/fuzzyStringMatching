@@ -161,6 +161,7 @@ void phoenix() {
 
 #include "../internal_state/InternalState.h"
 
+/* TODO:
 void gdelt_example() {
     InternalState internalState;
     internalState.load("configuration.json");
@@ -175,4 +176,4 @@ void gdelt_example() {
             std::cout << gdelt << std::endl;
         line.clear();
     }
-}
+}*/

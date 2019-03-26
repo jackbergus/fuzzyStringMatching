@@ -2,12 +2,18 @@ cmake_minimum_required(VERSION 3.10)
 project(inconsistency)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-fconstexpr-depth=5023 -m64")
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.45.0 COMPONENTS filesystem)
+include_directories(${Boost_INCLUDE_DIRS})
 include_directories(lib/rapidjson/include)
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
 set(FUZZY_MACTH_SOURCES  fmatch/LongStringValueMultimapIndexer/LSVM_Primary.cpp
+                         merging/fuzzymatch/FuzzyMatchSerializer.cpp
                          fmatch/LongStringValueMultimapIndexer/LSVM_Secondary.cpp
                          fmatch/StringLongHashMultimapIndexer/SLHM_Primary.cpp
                          fmatch/StringLongHashMultimapIndexer/SLHM_Secondary.cpp
@@ -20,3 +26,4 @@ add_executable(inconsistency main.cpp relationships/RelationshipTypes.h internal
                                       ${FUZZY_MACTH_SOURCES})
 target_include_directories(inconsistency PUBLIC ${LEMON_INCLUDE_DIR})
 target_link_libraries(inconsistency PUBLIC ${LEMON_LIBRARIES})
+target_link_libraries(inconsistency ${Boost_LIBRARIES})

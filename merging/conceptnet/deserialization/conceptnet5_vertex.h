@@ -40,7 +40,9 @@ struct conceptnet5_vertex {
      * dedupling the information inserted within the vectors
      */
     void dedup();
+    void finalizeObject();
 };
+
 
 
 #endif //INCONSISTENCY_CONCEPTNET5_VERTEX_H
