@@ -1,8 +1,0 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /media/giacomo/Data/Progetti/fuzzyStringMatching
--- Boost version: 1.65.1
--- Found the following Boost libraries:
---   filesystem
---   system
--- Configuring done
--- Generating done
--- Build files have been written to: /media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug

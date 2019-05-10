@@ -1,5 +1,0 @@
-/media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug/CMakeFiles/fuzzy_string_matching.dir
-/media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug/CMakeFiles/edit_cache.dir
-/media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug/CMakeFiles/lib_fuzzymatch_test.dir
-/media/giacomo/Data/Progetti/fuzzyStringMatching/cmake-build-debug/CMakeFiles/csv_serializers.dir
