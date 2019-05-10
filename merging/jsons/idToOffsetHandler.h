@@ -26,8 +26,8 @@
 #ifndef INCONSISTENCY_IDTOOFFSETHANDLER_H
 #define INCONSISTENCY_IDTOOFFSETHANDLER_H
 
-#include "rapidjson/reader.h"
-#include "rapidjson/filereadstream.h"
+#include <rapidjson/reader.h>
+#include <rapidjson/filereadstream.h>
 using namespace rapidjson;
 #include "../conceptnet/deserialization/conceptnet5_vertex.h"
 #include "../../utils/fixed_bimap.h"

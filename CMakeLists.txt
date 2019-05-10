@@ -7,7 +7,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.45.0 COMPONENTS filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(lib/rapidjson/include)
+include_directories(rapidjson/include)
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
