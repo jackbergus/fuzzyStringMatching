@@ -5,7 +5,6 @@
 #ifndef INCONSISTENCY_OBJECTTOMULTIPLESTRINGS_H
 #define INCONSISTENCY_OBJECTTOMULTIPLESTRINGS_H
 
-#include "../conceptnet/utils.h"
 #include "rapidjson/reader.h"
 #include "rapidjson/filereadstream.h"
 

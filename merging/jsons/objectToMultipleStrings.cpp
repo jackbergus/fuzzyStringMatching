@@ -3,6 +3,7 @@
 //
 
 #include "objectToMultipleStrings.h"
+#include "../conceptnet/utils.h"
 
 objectToMultipleStrings::objectToMultipleStrings(std::unordered_map<std::string, conceptnet5_vertex> &tr) :  translation(tr) {}
 

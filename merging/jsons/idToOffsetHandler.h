@@ -5,7 +5,6 @@
 #ifndef INCONSISTENCY_IDTOOFFSETHANDLER_H
 #define INCONSISTENCY_IDTOOFFSETHANDLER_H
 
-#include "../conceptnet/utils.h"
 #include "rapidjson/reader.h"
 #include "rapidjson/filereadstream.h"
 using namespace rapidjson;

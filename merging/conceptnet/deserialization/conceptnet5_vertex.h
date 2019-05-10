@@ -7,7 +7,6 @@
 
 #include <string>
 #include <vector>
-#include "../utils.h"
 
 /**
  * Providing the basic vertex representation

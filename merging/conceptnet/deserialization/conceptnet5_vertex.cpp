@@ -3,6 +3,7 @@
 //
 
 #include "conceptnet5_vertex.h"
+#include "../utils.h"
 
 #include <unordered_set>
 #include <algorithm>

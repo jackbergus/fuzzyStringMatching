@@ -3,6 +3,7 @@
 //
 
 #include "idToOffsetHandler.h"
+#include "../conceptnet/utils.h"
 
 idToOffsetHandler::idToOffsetHandler(fixed_bimap<std::string, LONG_NUMERIC> &map,
                                      std::unordered_map<std::string, conceptnet5_vertex> &tr) : map(map), translation(tr) {}

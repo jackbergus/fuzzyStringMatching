@@ -2,11 +2,13 @@
 // Created by giacomo on 27/09/18.
 //
 
-#include "libfuzzymatch.h"
 #include <iostream>
 #include <sstream>
 #include <iterator>
 #include <unordered_set>
+#include <unordered_map>
+#include "FuzzyMatch_FDContainer.h"
+#include "../serializers/commons/structure.h"
 
 std::string baseDir;
 std::unordered_map<std::string, FuzzyMatch_FDContainer> map;
