@@ -8,6 +8,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.45.0 COMPONENTS filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(third_party/rapidjson/include)
+include_directories(third_party/graphnestingc)
+add_subdirectory(third_party/graphnestingc)
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
@@ -32,10 +34,6 @@ ADD_LIBRARY(fuzzystringmatching STATIC
                         merging/conceptnet/deserialization/conceptnet5_vertex.h
                         merging/conceptnet/utils.cpp
                         merging/conceptnet/utils.h
-                        numeric/compares.cpp
-                        numeric/compares.h
-                        serializers/utils/mmapFile.cpp
-                        serializers/utils/mmapFile.h
                         fromJava/trimmers.cpp
                         fromJava/trimmers.h)
 
@@ -48,6 +46,6 @@ add_executable(lib_fuzzymatch_test fmatch/libfuzzymatching_test.cpp)
 #                                      ${FUZZY_MACTH_SOURCES})
 #target_include_directories(inconsistency PUBLIC ${LEMON_INCLUDE_DIR})
 #target_link_libraries(inconsistency PUBLIC ${LEMON_LIBRARIES})
-target_link_libraries(fuzzy_string_matching ${Boost_LIBRARIES} fuzzystringmatching)
-target_link_libraries(lib_fuzzymatch_test ${Boost_LIBRARIES} fuzzystringmatching)
-target_link_libraries(csv_serializers ${Boost_LIBRARIES} pthread fuzzystringmatching)
+target_link_libraries(fuzzy_string_matching ${Boost_LIBRARIES} fuzzystringmatching graphserializers)
+target_link_libraries(lib_fuzzymatch_test ${Boost_LIBRARIES} fuzzystringmatching graphserializers)
+target_link_libraries(csv_serializers ${Boost_LIBRARIES} pthread fuzzystringmatching graphserializers)

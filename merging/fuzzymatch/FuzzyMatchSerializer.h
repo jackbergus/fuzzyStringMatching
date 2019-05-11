@@ -27,7 +27,7 @@
 #define INCONSISTENCY_FUZZYMATCHSERIALIZER_H
 
 
-#include "../../serializers/commons/structure.h"
+#include <serializers/commons/structure.h>
 #include "../../fmatch/StringLongHashMultimapIndexer/SLHM_Primary.h"
 #include "../../fmatch/LongStringValueMultimapIndexer/LSVM_Primary.h"
 #include "../../fmatch/StringToTwoGramSizeHashMultimapIndexer/STTGSHM_Primary.h"

@@ -27,7 +27,7 @@
 #define GRAPHSAMPLER_BINSEARCH_H
 
 #include <vector>
-#include "../serializers/commons/structure.h"
+#include <serializers/commons/structure.h>
 
 /**
  * Performs the binary search over a vector of Ts

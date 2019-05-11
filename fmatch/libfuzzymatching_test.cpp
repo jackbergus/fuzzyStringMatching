@@ -29,7 +29,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "FuzzyMatch_FDContainer.h"
-#include "../serializers/commons/structure.h"
+#include <serializers/commons/structure.h>
 
 std::string baseDir;
 std::unordered_map<std::string, FuzzyMatch_FDContainer> map;

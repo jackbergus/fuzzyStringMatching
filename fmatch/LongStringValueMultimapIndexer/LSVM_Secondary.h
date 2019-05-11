@@ -24,8 +24,8 @@
 //
 
 #include "../libfuzzymatch.h"
-#include "../../serializers/commons/structure.h"
-#include "../../serializers/utils/mmapFile.h"
+#include <serializers/commons/structure.h>
+#include <serializers/utils/mmapFile.h>
 #include "../../algorithms/binsearch.h"
 
 

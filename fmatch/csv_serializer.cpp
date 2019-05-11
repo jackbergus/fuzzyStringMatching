@@ -24,7 +24,7 @@
 //
 
 
-#include "../serializers/commons/structure.h"
+#include <serializers/commons/structure.h>
 #include "libfuzzymatch.h"
 #include <cstdio>
 #include <cstring>

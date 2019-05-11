@@ -1,3 +1,6 @@
 [submodule "rapidjson"]
 	path = third_party/rapidjson
 	url = https://github.com/Tencent/rapidjson/
+[submodule "third_party/graphnestingc"]
+	path = third_party/graphnestingc
+	url = https://bitbucket.org/unibogb/graphnestingc.git

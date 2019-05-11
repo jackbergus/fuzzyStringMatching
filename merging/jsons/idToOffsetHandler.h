@@ -31,7 +31,7 @@
 using namespace rapidjson;
 #include "../conceptnet/deserialization/conceptnet5_vertex.h"
 #include "../../utils/fixed_bimap.h"
-#include "../../serializers/commons/structure.h"
+#include <serializers/commons/structure.h>
 
 /**
  * This class maps each ConceptNetId to its corresponding offset.
