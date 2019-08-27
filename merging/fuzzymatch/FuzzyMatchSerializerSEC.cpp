@@ -136,14 +136,11 @@ void FuzzyMatchSerializerSEC::serialize() {
         lsvm_ems.run(objectMultipleStirngs_values, objectMultipleStirngs_index, 3);
         // sorting finished
 
-
         std::vector<std::string> lhm;
-
         std::string pix{mainDir+"/objectMultipleStirngs.csv_vector.bin"};
         std::string val{mainDir+"/objectMultipleStirngs.csv_values.bin"};
         FILE *primaryIndex = fopen(pix.c_str(), "w");
         FILE *values = fopen(val.c_str(), "w");
-
         char init = ' ';
 
         // Initial header: position zero is set to nothing.
@@ -166,7 +163,7 @@ void FuzzyMatchSerializerSEC::serialize() {
 
             std::cout << currentKey << " -- " << currentString << std::endl;
 
-            /*if (first)
+            if (first)
                 prevNumber = currentKey;
 
             if (first || (prevNumber != currentKey)) {
@@ -183,12 +180,12 @@ void FuzzyMatchSerializerSEC::serialize() {
                 prevNumber = currentKey;
             }
 
-            lhm.emplace_back(currentString);*/
+            lhm.emplace_back(currentString);
         }
 
         fwrite(&prevNumber, sizeof(LONG_NUMERIC), 1, primaryIndex);
         fwrite(&offset, sizeof(LONG_NUMERIC), 1, primaryIndex);
-        //XXX serializeOMSVector(lhm, values);
+        serializeOMSVector(lhm, values);
 
         fclose(primaryIndex);
         fclose(values);
@@ -196,7 +193,6 @@ void FuzzyMatchSerializerSEC::serialize() {
         unlink(objectGramSize_values.c_str());
     }
 
-    /*
     {
         slhmSerializeInOldFormat(ptr, mainDir+"/termToObjects.csv_vector.bin", mainDir+"/termToObjects.csv_values.bin", termObject, termObject_index, termObject_values);
     }
@@ -260,7 +256,7 @@ void FuzzyMatchSerializerSEC::serialize() {
         fclose(values);
         unlink(twogramAndStringMultiplicity_index.c_str());
         unlink(twogramAndStringMultiplicity_value.c_str());
-    }*/
+    }
 
     // join all the threads
     delete ptr;
@@ -282,7 +278,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
     bool first = true;
     LONG_NUMERIC offset = 0, prevBucket = 0;
     LinkedHashMultimap<std::string, LONG_NUMERIC> lhm;
-    for (virtual_sorter::iterator it = termObject.begin(); it != termObject.end(); it++) {
+    for (virtual_sorter::iterator it = c.begin(); it != c.end(); it++) {
         // It already contains the key/value, or the single value (as you serialized the data)
         struct slhm *curr = (struct slhm *) it->iov_base;
         LONG_NUMERIC bucket = curr->hash;
