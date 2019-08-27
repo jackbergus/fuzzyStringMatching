@@ -48,7 +48,7 @@ void compareStringHashmap2(std::string& string, std::unordered_map<std::string,L
  * The serialized data should be accessed and queried using the FuzzyMatch class.
  */
 class FuzzyMatchSerializer {
-
+public:
     /**
      * This method creates all the indices in primary memory
      *
@@ -56,30 +56,7 @@ class FuzzyMatchSerializer {
      * @param id                            Object id (eg. an offset)
      * @param associatedOtherStrings        Other secondary strings associated to the preferred object
      */
-    void addGramsToMap(std::string& string, LONG_NUMERIC id, std::vector<std::string>& associatedOtherStrings) {
-        if (string.empty()) return;
-
-        termObject.store(string, id);
-        objectMultipleStirngs.store(id, string);
-        for (std::string& x : associatedOtherStrings)
-            objectMultipleStirngs.store(id, x);
-
-        std::unordered_map<std::string,LONG_NUMERIC> cp;
-        std::vector<LONG_NUMERIC> vec;
-
-        compareStringHashmap2(string, cp, vec);
-        LONG_NUMERIC sum = 0;
-        for (LONG_NUMERIC& j : vec) {
-            sum += j;
-        }
-        objectGramSize.store(string, sum);
-
-        for (std::unordered_map<std::string,LONG_NUMERIC>::iterator begin = cp.begin(), end = cp.end(); begin!=end; begin++) {
-            std::string x = begin->first;
-            twogramAndStringMultiplicity.store(string, x, begin->second);
-            gramToObject.store(x, id);
-        }
-    }
+    void addGramsToMap(std::string& string, LONG_NUMERIC id, std::vector<std::string>& associatedOtherStrings);
 
     /**
      * This method serializes the indices as several secondary memory files.

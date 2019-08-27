@@ -35,8 +35,6 @@ void LongStringValueMultimapIndexer_Primary::store(LONG_NUMERIC id, std::string 
 
 void LongStringValueMultimapIndexer_Primary::serialize(FILE *primaryIndex, FILE *values) {
     RBTree<LONG_NUMERIC, std::string>::rbiterator it = ordered_multimap.iterator();
-    LONG_NUMERIC prevElement = 0;
-    LONG_NUMERIC noOffset = 0;
     char init = ' ';
 
     // Initial header: position zero is set to nothing.

@@ -29,6 +29,9 @@ SLHM_Primary::SLHM_Primary() : ordered_multimap{&compareUL_Int} {}
 
 less_than_stringKey<std::vector<LONG_NUMERIC>>                   ltk1{};
 
+struct secondary_memory_tmp {
+
+};
 
 void SLHM_Primary::store(std::string &elem, LONG_NUMERIC value) {
     Node<LONG_NUMERIC, std::pair<std::string, std::vector<LONG_NUMERIC>>> *hashKey = ordered_multimap.insertKey(hfunc(elem));

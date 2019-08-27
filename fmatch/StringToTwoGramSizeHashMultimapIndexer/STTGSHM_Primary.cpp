@@ -32,9 +32,6 @@ less_than_stringKey<LONG_NUMERIC>                                ltk3{};
 StringToTwoGramSizeHashMultimapIndexer::StringToTwoGramSizeHashMultimapIndexer() : ordered_multimap{&compareUL_Int} {}
 
 void StringToTwoGramSizeHashMultimapIndexer::store(std::string &elem, std::string &twogram, LONG_NUMERIC value) {
-    if (elem == "surface-to-air missile") {
-        std::cerr << "element " << std::to_string(hfunc(elem)) << std::endl;
-    }
     Node<LONG_NUMERIC, std::pair<std::string, std::vector<std::pair<std::string, LONG_NUMERIC>>>> *hashKey = ordered_multimap.insertKey(hfunc(elem));
     if (hashKey->getSize() != 0) {
         for (std::pair<std::string, std::vector<std::pair<std::string, LONG_NUMERIC>>> &x : hashKey->overflowList) {
@@ -58,10 +55,6 @@ void StringToTwoGramSizeHashMultimapIndexer::serialize(FILE *hashing, FILE *valu
         LONG_NUMERIC bucket = it.getCurrentK();
         fwrite(&bucket, sizeof(LONG_NUMERIC), 1, hashing);
         fwrite(&offset, sizeof(LONG_NUMERIC), 1, hashing);
-        if (bucket == 429959643958480452L){
-            fflush(hashing);
-            std::cerr << "test " << std::endl;
-        }
         LONG_NUMERIC nElement = element->overflowList.size();
 
         // B. Sorting

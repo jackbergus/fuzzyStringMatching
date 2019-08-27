@@ -18,7 +18,7 @@
  * along with fuzzyStringMatching. If not, see <http://www.gnu.org/licenses/>.
  */
 
- 
+ /*
 #include <iostream>
 #include "merging/jsons/idToOffsetHandler.h"
 #include "merging/fuzzymatch/FuzzyMatch.h"
@@ -27,23 +27,25 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/istreamwrapper.h"
-#include "rapidjson/stringbuffer.h"
+#include "rapidjson/stringbuffer.h"*/
+
+
 
 int main() {
-    rapidjson::Document hypothesis;
+    /*rapidjson::Document hypothesis;
     rapidjson::Document configuration;
 
     /**
      * This map univocally associates each ConceptNet url (in its non-basic form) into the id/offset of where such
      * vertex is stored within the serialized representation. This map is a non-mutable bijection, and therefore
      * the key might be searched to find the value and viceversa.
-     */
+     *
     fixed_bimap<std::string, LONG_NUMERIC> non_3basicid_to_offset;
 
     /**
      * This map univocally associatetes each basic-form id into the overall vertex information that is required
      * to traverse the graph.
-     */
+     *
     std::unordered_map<std::string, conceptnet5_vertex> vertex_main_id_to_vertex_information;
 
     FuzzyMatch hierarchiesForFuzzyMatch;
@@ -64,6 +66,8 @@ int main() {
     {
         objectToMultipleStrings handler{vertex_main_id_to_vertex_information};
         handler.readFromFile("/media/giacomo/Biggus/project_dir/data/json/id_to_strings/objectToMultipleStrings.json");
-    }
+    }*/
+
+
 
 }

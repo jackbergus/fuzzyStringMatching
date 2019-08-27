@@ -64,7 +64,7 @@ public:
 
     FuzzyMatch_FDContainer();
     void open(std::string rootDir);
-    void fuzzyMatch(double threshold, int topk, String& objectStrings, TreeMultimap<double, LONG_NUMERIC>& result);
+    void fuzzyMatch(double threshold, int topk, String& objectStriinternalMapngs, TreeMultimap<double, LONG_NUMERIC>& result);
     void fuzzyMatch(double threshold, int topk, String objectStrings);
     bool hasCurrent();
     double getCurrentKey();

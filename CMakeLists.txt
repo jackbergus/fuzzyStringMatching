@@ -10,6 +10,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(third_party/rapidjson/include)
 include_directories(third_party/graphnestingc)
 add_subdirectory(third_party/graphnestingc)
+add_subdirectory(third_party/varsorter)
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/modules)
@@ -35,7 +36,7 @@ ADD_LIBRARY(fuzzystringmatching STATIC
                         merging/conceptnet/utils.cpp
                         merging/conceptnet/utils.h
                         fromJava/trimmers.cpp
-                        fromJava/trimmers.h)
+                        fromJava/trimmers.h merging/fuzzymatch/FuzzyMatchSerializerSEC.cpp merging/fuzzymatch/FuzzyMatchSerializerSEC.h utils/stringuitls.cpp utils/stringuitls.h fromJava/LinkedHashMultimap.h)
 
 
 add_executable(fuzzy_string_matching main.cpp )

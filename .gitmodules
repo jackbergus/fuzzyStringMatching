@@ -4,3 +4,6 @@
 [submodule "third_party/graphnestingc"]
 	path = third_party/graphnestingc
 	url = https://bitbucket.org/unibogb/graphnestingc.git
+[submodule "third_party/varsorter"]
+	path = third_party/varsorter
+	url = https://github.com/jackbergus/varsorter
