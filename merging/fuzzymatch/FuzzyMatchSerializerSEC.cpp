@@ -116,12 +116,11 @@ void FuzzyMatchSerializerSEC::serializeToSLHM(const std::string &string, LONG_NU
 }
 
 void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id) {
-    LONG_NUMERIC size = sizeof(LONG_NUMERIC) + (string.length() + 1)*(sizeof(char)) + sizeof(char);
-    oms_malloc.domalloc(size);
+    LONG_NUMERIC size = sizeof(LONG_NUMERIC) + (string.length() )*(sizeof(char));
     void* lsvmMem = oms_malloc.domalloc(size);
     *((LONG_NUMERIC *) lsvmMem) = id;
     *(((char *) lsvmMem) + (size - sizeof(char))) = '\0'; // zero terminated string
-    memset(((char *) lsvmMem) + sizeof(LONG_NUMERIC), 0, string.length());
+    memset(((char *) lsvmMem) + sizeof(LONG_NUMERIC), 0, oms_malloc.malloced_iovec.iov_len- sizeof(LONG_NUMERIC));
     memory_copy(((char *) lsvmMem) + sizeof(LONG_NUMERIC), (char*) string.c_str(), string.length());
     objectMultipleStirngs.insert(oms_malloc.malloced_iovec);
 }
@@ -157,7 +156,13 @@ void FuzzyMatchSerializerSEC::serialize() {
         for (virtual_sorter::iterator it = objectMultipleStirngs.begin(); it != objectMultipleStirngs.end(); it++) {
             // It already contains the key/value, or the single value (as you serialized the data)
             LONG_NUMERIC currentKey = *((LONG_NUMERIC*)it->iov_base);
-            std::string currentString{((char*)it->iov_base)+sizeof(LONG_NUMERIC), it->iov_len- sizeof(LONG_NUMERIC)};
+            // The current string might contain (after the sorting phase) a lot of trailing elements. Removing those...
+            std::string tmpString{((char *) it->iov_base) + sizeof(LONG_NUMERIC),it->iov_len - sizeof(LONG_NUMERIC)};
+            // ... by getting the actual string length
+            LONG_NUMERIC tmpLen = strlen(tmpString.c_str());
+            // ... and then, getting the actual string
+            std::string currentString{tmpString.c_str(), tmpLen};
+            tmpString.clear();
 
             std::cout << currentKey << " -- " << currentString << std::endl;
 
