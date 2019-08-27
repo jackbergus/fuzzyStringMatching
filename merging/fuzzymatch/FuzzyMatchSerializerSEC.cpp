@@ -144,8 +144,8 @@ void FuzzyMatchSerializerSEC::serialize() {
         // sorting finished
 
         std::vector<std::string> lhm;
-        std::string pix{mainDir+"/objectMultipleStirngs.csv_vector.bin"};
-        std::string val{mainDir+"/objectMultipleStirngs.csv_values.bin"};
+        std::string pix{mainDir+"/objectToMultipleStrings.csv_vector.bin"};
+        std::string val{mainDir+"/objectToMultipleStrings.csv_values.bin"};
         FILE *primaryIndex = fopen(pix.c_str(), "w");
         FILE *values = fopen(val.c_str(), "w");
         char init = ' ';
