@@ -14,7 +14,12 @@
 #include "FuzzyMatchSerializer.h"
 #include "FuzzyMatchSerializerSEC.h"
 
-
+std::string rectifyString(const std::string& original) {
+    LONG_NUMERIC tmpLen = strlen(original.c_str());
+    // ... and then, getting the actual string
+    std::string currentString{original.c_str(), tmpLen};
+    return currentString;
+}
 
 FuzzyMatchSerializerSEC::FuzzyMatchSerializerSEC(std::string path) :
     mainDir{path},
@@ -157,9 +162,8 @@ void FuzzyMatchSerializerSEC::serialize() {
             // The current string might contain (after the sorting phase) a lot of trailing elements. Removing those...
             std::string tmpString{((char *) it->iov_base) + sizeof(LONG_NUMERIC),it->iov_len - sizeof(LONG_NUMERIC)};
             // ... by getting the actual string length
-            LONG_NUMERIC tmpLen = strlen(tmpString.c_str());
             // ... and then, getting the actual string
-            std::string currentString{tmpString.c_str(), tmpLen};
+            std::string currentString{rectifyString(tmpString)};
             tmpString.clear();
 
             std::cout << currentKey << " -- " << currentString << std::endl;
@@ -247,7 +251,7 @@ void FuzzyMatchSerializerSEC::serialize() {
             LONG_NUMERIC ngramLen = curr->twograms[1] == '\0' ? 1 : 2;
             std::wstring ws{(wchar_t*)&curr->twograms, ngramLen};
             std::string ngram{ws.begin(), ws.end()};
-            lhm.put(str, std::make_pair(ngram, curr->number));
+            lhm.put(rectifyString(str), std::make_pair(ngram, curr->number));
         }
 
         offset += serializeTGASM(lhm, values);
@@ -279,6 +283,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
     bool first = true;
     LONG_NUMERIC offset = 0, prevBucket = 0;
     LinkedHashMultimap<std::string, LONG_NUMERIC> lhm;
+    c.doclose();  // force to reopen the file
     for (virtual_sorter::iterator it = c.begin(); it != c.end(); it++) {
         // It already contains the key/value, or the single value (as you serialized the data)
         struct slhm *curr = (struct slhm *) it->iov_base;
@@ -300,7 +305,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
             first = false;
         }
         std::string str{slhm_hack(curr), curr->strlen};
-        lhm.put(str, curr->number);
+        lhm.put(rectifyString(str), curr->number);
 
     }
 
@@ -352,9 +357,10 @@ LONG_NUMERIC FuzzyMatchSerializerSEC::serializeTermObjectMap(LinkedHashMultimap<
 
         // 4) vector
         // Writing the longs
-        for (int i = 0; i<ptr->second.size(); i++)
+        for (int i = 0; i<ptr->second.size(); i++) {
+            std::cout << first << " @@ " << ptr->second[i] << std::endl;
             fwrite(&ptr->second[i], sizeof(LONG_NUMERIC), 1, values);
-
+        }
     }
 
     return offsetsInBucketForKey;

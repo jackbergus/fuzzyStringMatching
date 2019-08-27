@@ -18,6 +18,7 @@
  * along with fuzzyStringMatching. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "merging/fuzzymatch/FuzzyMatch.h"
 #include "merging/fuzzymatch/FuzzyMatchSerializerSEC.h"
 
 /*
@@ -76,7 +77,7 @@ int main() {
         handler.readFromFile("/media/giacomo/Biggus/project_dir/data/json/id_to_strings/objectToMultipleStrings.json");
     }*/
 
-    FuzzyMatchSerializerSEC secondary_test{"/media/giacomo/Data/test_serialization"};
+    FuzzyMatchSerializerSEC secondary_test{"/media/giacomo/Data/test_serialization_csvDir"};
     
     {
         LONG_NUMERIC id = 0;
@@ -109,5 +110,14 @@ int main() {
     }
 
     secondary_test.serialize();
+
+    /*FuzzyMatch fm{"/media/giacomo/Data/"};
+    std::string dimension{"test_serialization"};
+    TreeMultimap<double, LONG_NUMERIC> res;
+    std::string query{"berga"};
+    fm.fuzzyMatch(dimension, 0.0, 100, query, res);
+    for (auto it = res.begin(), en = res.end(); it != en; it++) {
+        std::cout << it->first << " @ " << it->second << std::endl;
+    }*/
 
 }
