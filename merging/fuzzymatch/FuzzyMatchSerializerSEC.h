@@ -23,15 +23,22 @@ struct slhm {
     LONG_NUMERIC hash;
     LONG_NUMERIC number;
     LONG_NUMERIC strlen;
-    char      string[];
+    //char      string[];    --> Struct hack do not work on C++
 };
+
+/**
+ * Struct hacks do not work in C++. Therefore, simply point at the end of the structure of choice.
+ */
+#define struct_hack(T, ptr)     ((char*)(((char*)(ptr)) + sizeof(T)))
+#define slhm_hack(ptr)          struct_hack(struct slhm, ptr)
+#define sttgshm_hack(ptr)       struct_hack(struct sttgshm, ptr)
 
 class slhmComparator : public QuicksortLessComparator {
 public:
     bool greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) override {
         struct slhm *left = (struct slhm*)leftM, *right = (struct slhm*)rightM;
         return (left->hash < right->hash) ||
-                ((left->hash == right->hash) && (strnmcmp(left->string, left->strlen, right->string, right->strlen) > 0));
+                ((left->hash == right->hash) && (strnmcmp(slhm_hack(left), left->strlen, slhm_hack(right), right->strlen) > 0));
     }
 };
 
@@ -40,14 +47,14 @@ struct sttgshm {
     LONG_NUMERIC number;
     LONG_NUMERIC strlen;
     wchar_t      twograms[2];
-    char      string[];
+    //char      string[];
 };
 
 class sttgshmComparator : public QuicksortLessComparator {
 public:
     bool greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) override {
         struct sttgshm *left = (struct sttgshm*)leftM, *right = (struct sttgshm*)rightM;
-        int cmp = strnmcmp(left->string, left->strlen, right->string, right->strlen);
+        int cmp = strnmcmp(sttgshm_hack(left), left->strlen, sttgshm_hack(right), right->strlen);
         return (left->hash < right->hash) ||
                ((left->hash == right->hash) && (cmp > 0)) ||
                 ((left->hash == right->hash) && (cmp == 0) && (left->twograms[0] > right->twograms[0] || (left->twograms[0] == right->twograms[0] && (!left->twograms[0]) && left->twograms[1] > right->twograms[1])));

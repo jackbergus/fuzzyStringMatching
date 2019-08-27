@@ -67,21 +67,32 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
 
     for (std::unordered_map<std::string, LONG_NUMERIC>::iterator begin = cp.begin(), end = cp.end(); begin!=end; begin++) {
         //
+        std::string key = begin->first;
+        LONG_NUMERIC value = begin->second;
+
+        std::cout << i++ << std::endl;
         LONG_NUMERIC strlen = string.length();
         LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
-        void *lsvmMem = twogramAndStringMultiplicity_malloc.domalloc(size);
-        ((struct sttgshm *) lsvmMem)->hash = stringhashing(string);
-        ((struct sttgshm *) lsvmMem)->strlen = strlen;
-        ((struct sttgshm *) lsvmMem)->number = begin->second;
-        std::wstring x = this->converter.from_bytes(begin->first.c_str());
+        //std::cout << "Memory: " << size << std::endl;
+        struct sttgshm *lsvmMem = (struct sttgshm *)twogramAndStringMultiplicity_malloc.domalloc(size);
+
+        // Clearing the memory associated to the stirng: ensuring no strange problems
+        memset((void *) sttgshm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
+        memset((void *) (&(lsvmMem)->twograms[0]), 0, sizeof(wchar_t) * (2));
+
+        (lsvmMem)->hash = stringhashing(string);
+        (lsvmMem)->strlen = strlen;
+        (lsvmMem)->number = value;
+        std::wstring x = this->converter.from_bytes(key.c_str());
         size_t xs = x.length();
-        ((struct sttgshm *) lsvmMem)->twograms[0] = (xs == 0) ? '\0' : x[0];
-        ((struct sttgshm *) lsvmMem)->twograms[1] = (xs == 1) ? '\0' : x[1];
-        strncpy((char *) (((struct sttgshm *) lsvmMem)->string), (char *) string.c_str(), sizeof(char) * strlen);
+        memory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
+        memory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
         twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
 
         //
-        serializeToSLHM(begin->first, id, gramToObject);
+        serializeToSLHM(key, id, gramToObject);
+
+        //cp.erase(begin++); //Disposing while iterating
     }
 
 
@@ -91,11 +102,12 @@ void FuzzyMatchSerializerSEC::serializeToSLHM(const std::string &string, LONG_NU
                                               KeyValueStore<slhmComparator> &serializer) {
     LONG_NUMERIC strlen = string.length();
     LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
-    void *lsvmMem = slhm_malloc.domalloc(size);
-    ((struct slhm *) lsvmMem)->hash = stringhashing(string);
-    ((struct slhm *) lsvmMem)->strlen = strlen;
-    ((struct slhm *) lsvmMem)->number = id;
-    strncpy((char *) (((struct slhm *) lsvmMem)->string), (char *) string.c_str(), sizeof(char) * strlen);
+    struct slhm * lsvmMem = (struct slhm *)slhm_malloc.domalloc(size);
+    lsvmMem->hash = stringhashing(string);
+    lsvmMem->strlen = strlen;
+    lsvmMem->number = id;
+    memset((char *) slhm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
+    memory_copy((char *) slhm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
 }
 
 void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id) {
@@ -104,7 +116,7 @@ void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &strin
     void* lsvmMem = oms_malloc.domalloc(size);
     *((LONG_NUMERIC *) lsvmMem) = id;
     *(((char *) lsvmMem) + (size - sizeof(char))) = '\0'; // zero terminated string
-    memcpy(((char *) lsvmMem) + sizeof(LONG_NUMERIC), (void *) string.c_str(), string.length());
+    memory_copy(((char *) lsvmMem) + sizeof(LONG_NUMERIC), (char*) string.c_str(), string.length());
     objectMultipleStirngs.insert(oms_malloc.malloced_iovec);
 }
 
@@ -220,7 +232,7 @@ void FuzzyMatchSerializerSEC::serialize() {
                 first = false;
             }
 
-            std::string str{curr->string, curr->strlen};
+            std::string str{sttgshm_hack(curr), curr->strlen};
             LONG_NUMERIC ngramLen = curr->twograms[1] == '\0' ? 1 : 2;
             std::wstring ws{(wchar_t*)&curr->twograms, ngramLen};
             std::string ngram{ws.begin(), ws.end()};
@@ -276,7 +288,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
             prevBucket = bucket;
             first = false;
         }
-        std::string str{curr->string, curr->strlen};
+        std::string str{slhm_hack(curr), curr->strlen};
         lhm.put(str, curr->number);
 
     }

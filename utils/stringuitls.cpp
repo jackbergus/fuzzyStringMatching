@@ -32,3 +32,4 @@ std::string utf8_tolower(const std::string &src) {
     std::transform( src.begin(), src.end(), std::back_inserter( result ), lowcase );
     return converterX.to_bytes(result);
 }
+

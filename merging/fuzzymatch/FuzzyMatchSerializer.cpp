@@ -32,7 +32,7 @@
 namespace fs = std::experimental::filesystem;
 
 
-void compareStringHashmap1(std::string &str, std::unordered_map<std::string, LONG_NUMERIC> &map,
+void compareStringHashmap1(std::string str, std::unordered_map<std::string, LONG_NUMERIC> &map,
                            std::vector<LONG_NUMERIC> &vec) {
     LONG_NUMERIC numPairs = str.length() - 1;
     if (numPairs == 0) {
@@ -42,9 +42,8 @@ void compareStringHashmap1(std::string &str, std::unordered_map<std::string, LON
         if (numPairs < 0) numPairs = 0;
         int singleGrams = 0;
         for (int i = 0; i < numPairs; i++) {
-            std::string s = str.substr(i, 2);
+            std::string s{utf8_tolower(str.substr(i, 2))};
             if (!s.empty()) {
-                s = utf8_tolower(s);
                 std::unordered_map<std::string, LONG_NUMERIC>::iterator pos = map.find(s);
                 if (pos == map.end()) {
                     map[s] = singleGrams++;
@@ -65,10 +64,12 @@ void compareStringHashmap2(std::string &string, std::unordered_map<std::string, 
         std::stringstream ss(string);
         std::vector<std::string> pairs;
 
+        // Getting the grams within each word, thus avoiding to create 2grams with a space
         while (ss >> str) {
             compareStringHashmap1(str, map, vec);
         }
     }
+    // Updating the gram count with each elements' output
     for (std::unordered_map<std::string,LONG_NUMERIC>::iterator kp = map.begin(), end = map.end(); kp != end; ++kp) {
         kp->second = vec[kp->second];
     }

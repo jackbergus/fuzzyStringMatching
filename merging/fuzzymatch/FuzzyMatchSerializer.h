@@ -36,7 +36,7 @@
 #include <vector>
 #include <unordered_map>
 
-void compareStringHashmap1(std::string& str, std::unordered_map<std::string,LONG_NUMERIC>& map, std::vector<LONG_NUMERIC>& vec);
+void compareStringHashmap1(std::string str, std::unordered_map<std::string,LONG_NUMERIC>& map, std::vector<LONG_NUMERIC>& vec);
 
 void compareStringHashmap2(std::string& string, std::unordered_map<std::string,LONG_NUMERIC>& map, std::vector<LONG_NUMERIC>& vec);
 
