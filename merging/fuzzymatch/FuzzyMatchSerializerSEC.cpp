@@ -56,19 +56,20 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
         serializeToObjectMultimap(associated, id);
     }
 
-    std::unordered_map<std::string, LONG_NUMERIC> cp;
+    ///XXX
+    ///XXXstd::unordered_map<std::string, LONG_NUMERIC> cp;
     std::vector<LONG_NUMERIC> vec;
-    compareStringHashmap2(string, cp, vec);
+    ///XXXcompareStringHashmap2(string, cp, vec);
     LONG_NUMERIC sum = 0;
     for (LONG_NUMERIC& j : vec) {
         sum += j;
     }
     serializeToSLHM(string, sum, objectGramSize);
 
-    for (std::unordered_map<std::string, LONG_NUMERIC>::iterator begin = cp.begin(), end = cp.end(); begin!=end; begin++) {
+    ///XXXfor (std::unordered_map<std::string, LONG_NUMERIC>::iterator begin = cp.begin(), end = cp.end(); begin!=end; begin++) {
         //
-        std::string key = begin->first;
-        LONG_NUMERIC value = begin->second;
+    ///XXX std::string key = begin->first;
+    ///XXXLONG_NUMERIC value = begin->second;
 
         std::cout << i++ << std::endl;
         LONG_NUMERIC strlen = string.length();
@@ -77,23 +78,23 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
         struct sttgshm *lsvmMem = (struct sttgshm *)twogramAndStringMultiplicity_malloc.domalloc(size);
 
         // Clearing the memory associated to the stirng: ensuring no strange problems
-        memset((void *) sttgshm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
+        //memset((void *) sttgshm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
         memset((void *) (&(lsvmMem)->twograms[0]), 0, sizeof(wchar_t) * (2));
 
         (lsvmMem)->hash = stringhashing(string);
         (lsvmMem)->strlen = strlen;
-        (lsvmMem)->number = value;
-        std::wstring x = this->converter.from_bytes(key.c_str());
-        size_t xs = x.length();
-        memory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
-        memory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
-        twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
+    ///XXX(lsvmMem)->number = value;
+    ///XXXstd::wstring x = this->converter.from_bytes(key.c_str());
+    ///XXXsize_t xs = x.length();
+    ///XXXmemory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
+    ///XXXmemory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
+    ///XXX twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
 
         //
-        serializeToSLHM(key, id, gramToObject);
+    ///XXXserializeToSLHM(key, id, gramToObject);
 
         //cp.erase(begin++); //Disposing while iterating
-    }
+    ///XXX}
 
 
 }
