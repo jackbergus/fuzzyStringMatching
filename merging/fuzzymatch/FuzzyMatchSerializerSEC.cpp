@@ -121,6 +121,7 @@ void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &strin
     void* lsvmMem = oms_malloc.domalloc(size);
     *((LONG_NUMERIC *) lsvmMem) = id;
     *(((char *) lsvmMem) + (size - sizeof(char))) = '\0'; // zero terminated string
+    memset(((char *) lsvmMem) + sizeof(LONG_NUMERIC), 0, string.length());
     memory_copy(((char *) lsvmMem) + sizeof(LONG_NUMERIC), (char*) string.c_str(), string.length());
     objectMultipleStirngs.insert(oms_malloc.malloced_iovec);
 }
@@ -156,7 +157,7 @@ void FuzzyMatchSerializerSEC::serialize() {
         for (virtual_sorter::iterator it = objectMultipleStirngs.begin(); it != objectMultipleStirngs.end(); it++) {
             // It already contains the key/value, or the single value (as you serialized the data)
             LONG_NUMERIC currentKey = *((LONG_NUMERIC*)it->iov_base);
-            std::string currentString{((char*)it->iov_base)+sizeof(LONG_NUMERIC), it->iov_len- sizeof(LONG_NUMERIC) - sizeof(char)};
+            std::string currentString{((char*)it->iov_base)+sizeof(LONG_NUMERIC), it->iov_len- sizeof(LONG_NUMERIC)};
 
             std::cout << currentKey << " -- " << currentString << std::endl;
 
@@ -436,5 +437,5 @@ FuzzyMatchSerializerSEC::serializeTGASM(LinkedHashMultimap<std::string, std::pai
 }
 
 bool ExternalULongKeyComparator2::greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) {
-    return ((uint_fast64_t*)(leftM)) > ((uint_fast64_t*)(rightM));
+    return *((LONG_NUMERIC *)(leftM)) > *((LONG_NUMERIC *)(rightM));
 }
