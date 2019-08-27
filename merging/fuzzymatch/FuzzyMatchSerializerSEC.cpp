@@ -40,7 +40,11 @@ FuzzyMatchSerializerSEC::FuzzyMatchSerializerSEC(std::string path) :
     twogramAndStringMultiplicity{path+"/twogramAndStringMultiplicity_index.bin", path+"/twogramAndStringMultiplicity_valuesTmp.bin"}
 
     {
-
+        objectMultipleStirngs.isFixedSize = false;
+        gramToObject.isFixedSize = false;
+        objectGramSize.isFixedSize = false;
+        termObject.isFixedSize = false;
+        twogramAndStringMultiplicity.isFixedSize = false;
 }
 
 void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id,
@@ -151,7 +155,7 @@ void FuzzyMatchSerializerSEC::serialize() {
 
         for (virtual_sorter::iterator it = objectMultipleStirngs.begin(); it != objectMultipleStirngs.end(); it++) {
             // It already contains the key/value, or the single value (as you serialized the data)
-            LONG_NUMERIC currentKey = *((LONG_NUMERIC*)it->iov_len);
+            LONG_NUMERIC currentKey = *((LONG_NUMERIC*)it->iov_base);
             std::string currentString{((char*)it->iov_base)+sizeof(LONG_NUMERIC), it->iov_len- sizeof(LONG_NUMERIC) - sizeof(char)};
 
             std::cout << currentKey << " -- " << currentString << std::endl;
