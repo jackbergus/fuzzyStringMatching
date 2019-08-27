@@ -56,7 +56,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
         serializeToObjectMultimap(associated, id);
     }
 
-    ///XXX
+
     std::unordered_map<std::string, LONG_NUMERIC> cp;
     std::vector<LONG_NUMERIC> vec;
     compareStringHashmap2(string, cp, vec);
@@ -73,12 +73,12 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
 
         std::cout << i++ << std::endl;
         LONG_NUMERIC strlen = string.length();
-        LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
+        LONG_NUMERIC size = sizeof(struct sttgshm) + sizeof(char) * (strlen + 1);
         //std::cout << "Memory: " << size << std::endl;
         struct sttgshm *lsvmMem = (struct sttgshm *)twogramAndStringMultiplicity_malloc.domalloc(size);
 
         // Clearing the memory associated to the stirng: ensuring no strange problems
-        //memset((void *) sttgshm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
+        memset((void *) sttgshm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
         memset((void *) (&(lsvmMem)->twograms[0]), 0, sizeof(wchar_t) * (2));
 
         (lsvmMem)->hash = stringhashing(string);
@@ -86,7 +86,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
     (lsvmMem)->number = value;
     std::wstring x = this->converter.from_bytes(key.c_str());
     size_t xs = x.length();
-    //memory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
+    memory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
     memory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
     twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
 
