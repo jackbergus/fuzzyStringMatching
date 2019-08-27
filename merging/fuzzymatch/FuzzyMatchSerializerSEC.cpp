@@ -113,6 +113,7 @@ void FuzzyMatchSerializerSEC::serializeToSLHM(const std::string &string, LONG_NU
     lsvmMem->number = id;
     memset((char *) slhm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
     memory_copy((char *) slhm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
+    termObject.insert(slhm_malloc.malloced_iovec);
 }
 
 void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id) {
