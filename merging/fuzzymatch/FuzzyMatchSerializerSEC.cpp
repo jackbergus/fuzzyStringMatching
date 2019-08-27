@@ -71,7 +71,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
      std::string key = begin->first;
     LONG_NUMERIC value = begin->second;
 
-        std::cout << i++ << std::endl;
+        //std::cout << i++ << std::endl;
         LONG_NUMERIC strlen = string.length();
         LONG_NUMERIC size = sizeof(struct sttgshm) + sizeof(char) * (strlen + 1);
         //std::cout << "Memory: " << size << std::endl;
@@ -149,12 +149,14 @@ void FuzzyMatchSerializerSEC::serialize() {
         bool first = true;
         LONG_NUMERIC prevNumber =0;
 
-        for (virtual_sorter::iterator it = termObject.begin(); it != termObject.end(); it++) {
+        for (virtual_sorter::iterator it = objectMultipleStirngs.begin(); it != objectMultipleStirngs.end(); it++) {
             // It already contains the key/value, or the single value (as you serialized the data)
             LONG_NUMERIC currentKey = *((LONG_NUMERIC*)it->iov_len);
             std::string currentString{((char*)it->iov_base)+sizeof(LONG_NUMERIC), it->iov_len- sizeof(LONG_NUMERIC) - sizeof(char)};
 
-            if (first)
+            std::cout << currentKey << " -- " << currentString << std::endl;
+
+            /*if (first)
                 prevNumber = currentKey;
 
             if (first || (prevNumber != currentKey)) {
@@ -171,12 +173,12 @@ void FuzzyMatchSerializerSEC::serialize() {
                 prevNumber = currentKey;
             }
 
-            lhm.emplace_back(currentString);
+            lhm.emplace_back(currentString);*/
         }
 
         fwrite(&prevNumber, sizeof(LONG_NUMERIC), 1, primaryIndex);
         fwrite(&offset, sizeof(LONG_NUMERIC), 1, primaryIndex);
-        serializeOMSVector(lhm, values);
+        //XXX serializeOMSVector(lhm, values);
 
         fclose(primaryIndex);
         fclose(values);
@@ -184,6 +186,7 @@ void FuzzyMatchSerializerSEC::serialize() {
         unlink(objectGramSize_values.c_str());
     }
 
+    /*
     {
         slhmSerializeInOldFormat(ptr, mainDir+"/termToObjects.csv_vector.bin", mainDir+"/termToObjects.csv_values.bin", termObject, termObject_index, termObject_values);
     }
@@ -247,7 +250,7 @@ void FuzzyMatchSerializerSEC::serialize() {
         fclose(values);
         unlink(twogramAndStringMultiplicity_index.c_str());
         unlink(twogramAndStringMultiplicity_value.c_str());
-    }
+    }*/
 
     // join all the threads
     delete ptr;

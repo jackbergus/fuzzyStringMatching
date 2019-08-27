@@ -108,6 +108,6 @@ int main() {
         secondary_test.addGramsToMap(key, id, vector);
     }
 
-    /*secondary_test.serialize();*/
+    secondary_test.serialize();
 
 }
