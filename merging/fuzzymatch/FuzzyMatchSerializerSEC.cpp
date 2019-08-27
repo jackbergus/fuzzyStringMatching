@@ -72,7 +72,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
         void *lsvmMem = twogramAndStringMultiplicity_malloc.domalloc(size);
         ((struct sttgshm *) lsvmMem)->hash = stringhashing(string);
         ((struct sttgshm *) lsvmMem)->strlen = strlen;
-        ((struct sttgshm *) lsvmMem)->size = begin->second;
+        ((struct sttgshm *) lsvmMem)->number = begin->second;
         std::wstring x = this->converter.from_bytes(begin->first.c_str());
         size_t xs = x.length();
         ((struct sttgshm *) lsvmMem)->twograms[0] = (xs == 0) ? '\0' : x[0];
@@ -150,7 +150,7 @@ void FuzzyMatchSerializerSEC::serialize() {
                 fwrite(&offset, sizeof(LONG_NUMERIC), 1, primaryIndex);
 
                 if (!first) {
-                    offset += serializeOMS(lhm, values);
+                    offset += serializeOMSVector(lhm, values);
                     lhm.clear();
                 }
 
@@ -163,7 +163,7 @@ void FuzzyMatchSerializerSEC::serialize() {
 
         fwrite(&prevNumber, sizeof(LONG_NUMERIC), 1, primaryIndex);
         fwrite(&offset, sizeof(LONG_NUMERIC), 1, primaryIndex);
-        serializeOMS(lhm, values);
+        serializeOMSVector(lhm, values);
 
         fclose(primaryIndex);
         fclose(values);
@@ -187,7 +187,53 @@ void FuzzyMatchSerializerSEC::serialize() {
         twogramAndStringMultiplicity.c.close();
         external_merge_sort<sttgshmComparator> gasm_ems;
         gasm_ems.run(twogramAndStringMultiplicity_value, twogramAndStringMultiplicity_index, 3);
-        // TODO: implement
+
+        std::string hashingFile = mainDir+"/twogramAndStringMultiplicity_hashing.bin";
+        std::string valuesFile = mainDir+"/twogramAndStringMultiplicity_values.bin";
+        FILE *hashing = fopen(hashingFile.c_str(), "w");
+        FILE *values = fopen(valuesFile.c_str(), "w");
+
+
+        LONG_NUMERIC offset = 0;
+        bool first = true;
+        LONG_NUMERIC prevNumber =0;
+
+        LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> lhm;
+
+        for (virtual_sorter::iterator it = termObject.begin(); it != termObject.end(); it++) {
+            struct sttgshm *curr = (struct sttgshm *) it->iov_base;
+            LONG_NUMERIC bucket = curr->hash;
+
+            if (first)
+                prevNumber = bucket;
+
+            if (first || (prevNumber != bucket)) {
+                fwrite(&bucket, sizeof(LONG_NUMERIC), 1, hashing);
+                fwrite(&offset, sizeof(LONG_NUMERIC), 1, hashing);
+
+                if (!first) {
+                    offset += serializeTGASM(lhm, values);
+                    lhm.clear();
+                }
+
+                prevNumber = bucket;
+                first = false;
+            }
+
+            std::string str{curr->string, curr->strlen};
+            LONG_NUMERIC ngramLen = curr->twograms[1] == '\0' ? 1 : 2;
+            std::wstring ws{(wchar_t*)&curr->twograms, ngramLen};
+            std::string ngram{ws.begin(), ws.end()};
+            lhm.put(str, std::make_pair(ngram, curr->number));
+        }
+
+        offset += serializeTGASM(lhm, values);
+        lhm.clear();
+
+        fclose(hashing);
+        fclose(values);
+        unlink(twogramAndStringMultiplicity_index.c_str());
+        unlink(twogramAndStringMultiplicity_value.c_str());
     }
 
     // join all the threads
@@ -223,7 +269,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
             fwrite(&offset, sizeof(LONG_NUMERIC), 1, hashing);
 
             if (!first) {
-                offset += serializeTermObject(lhm, values);
+                offset += serializeTermObjectMap(lhm, values);
                 lhm.clear();
             }
 
@@ -237,7 +283,7 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
 
     fwrite(&prevBucket, sizeof(LONG_NUMERIC), 1, hashing);
     fwrite(&offset, sizeof(LONG_NUMERIC), 1, hashing);
-    serializeTermObject(lhm, values);
+    serializeTermObjectMap(lhm, values);
 
     fclose(hashing);
     fclose(values);
@@ -245,7 +291,8 @@ void FuzzyMatchSerializerSEC::slhmSerializeInOldFormat(void_virtual_sorter *ptr,
     unlink(oldValues.c_str());
 }
 
-LONG_NUMERIC FuzzyMatchSerializerSEC::serializeTermObject(LinkedHashMultimap<std::string, LONG_NUMERIC> &map, FILE *values) {
+LONG_NUMERIC FuzzyMatchSerializerSEC::serializeTermObjectMap(LinkedHashMultimap<std::string, LONG_NUMERIC> &map,
+                                                             FILE *values) {
     LONG_NUMERIC nElement = map.data.size();
 
     // Each element in the block is composed as so:
@@ -290,23 +337,82 @@ LONG_NUMERIC FuzzyMatchSerializerSEC::serializeTermObject(LinkedHashMultimap<std
     return offsetsInBucketForKey;
 }
 
-LONG_NUMERIC FuzzyMatchSerializerSEC::serializeOMS(std::vector<std::string> &multimap, FILE *values) {
+LONG_NUMERIC FuzzyMatchSerializerSEC::serializeOMSVector(std::vector<std::string> &valuesVector, FILE *values) {
     // -- serializing the size of the properties vector
-    LONG_NUMERIC n = multimap.size();
+    LONG_NUMERIC n = valuesVector.size();
     LONG_NUMERIC buffSize = (n+1)*(sizeof(LONG_NUMERIC));
 
     fwrite(&n, sizeof(buffSize), 1, values);
     for (LONG_NUMERIC i = 0; i<n; i++) {
-        std::string& x = multimap[i];
+        std::string& x = valuesVector[i];
         fwrite(&buffSize, sizeof(buffSize), 1, values);
         buffSize += (x.size()+1);
     }
 
     for (LONG_NUMERIC i = 0; i<n; i++) {
-        std::string& x = multimap[i];
+        std::string& x = valuesVector[i];
         fwrite(x.c_str(), x.size()+1, 1, values);
     }
     return buffSize;
+}
+
+LONG_NUMERIC
+FuzzyMatchSerializerSEC::serializeTGASM(LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> &multimap,
+                                        FILE *values) {
+
+    LONG_NUMERIC nElement = multimap.data.size();
+
+    // B. Sorting
+    // Sorting the array by string elements, so that the strings may be searched in log time within the bucket
+    // --> done in secondary memory: std::sort(element->overflowList.begin(), element->overflowList.end(), ltk2);
+    // Then, sorting each key inside by the two gram element, so even the subkeys can be searched in logn time
+    // --> done in secondary memory!
+    // for (LONG_NUMERIC i = 0; i<nElement; i++) {
+    //    std::sort(element->overflowList[i].second.begin(), element->overflowList[i].second.end(), ltk3);
+    //}
+
+    // Each element in the block is composed as so:
+    // 1) number of strings associated to longs.
+    //    the values are stored after the number of the elements...
+    LONG_NUMERIC offsetsInBucketForKey = sizeof(LONG_NUMERIC);
+    fwrite(&nElement, sizeof(LONG_NUMERIC), 1, values);
+
+    // 2) offset of each string associated to long (see 3)
+    ///   .., after the nElement offsets
+    offsetsInBucketForKey += (sizeof(LONG_NUMERIC)*(nElement));
+
+    // Then I serialize the values. Before doing that, I must evaluate which are the actual offsets that I have to use
+    for (std::string& first : multimap.data) {
+        // For each pair, I write the current offset for the keyMultivalue association
+        fwrite(&offsetsInBucketForKey, sizeof(LONG_NUMERIC), 1, values);
+        // size of vector     // actual vector size                                                    // stirng (key) associated to the vector
+        offsetsInBucketForKey += (sizeof(LONG_NUMERIC)*2+(sizeof(LONG_NUMERIC)+sizeof(wchar_t)*2)*(multimap.map[first].size())+first.size()+1);
+    }
+
+    // 3) for each string, we have the size of the block associated to it
+    //    such size is offsetToString + vecSize + [vector] + stirng.size+1
+    for (std::string& first : multimap.data) {
+        LONG_NUMERIC stirngSize = first.size()+1;
+
+        // 1) string length
+        fwrite(&stirngSize, sizeof(LONG_NUMERIC), 1, values);
+        // 2) string
+        fwrite(first.c_str(), stirngSize, 1, values);
+
+        // 3) vector size after string_length+sizeof(LONG_NUMERIC)
+        std::vector<std::pair<std::string, LONG_NUMERIC>> &second = multimap.map[first];
+        LONG_NUMERIC size = second.size();
+        fwrite(&size, sizeof(LONG_NUMERIC), 1, values);
+
+        for (int i = 0; i<second.size(); i++) {
+            // writing the two-grams ...
+            std::wstring wide = this->converter.from_bytes(second[i].first.c_str());
+            fwrite(((const wchar_t*)wide.c_str()), sizeof(wchar_t)*2, 1, values);
+            // ... alongside the associated longs
+            fwrite(&second[i].second, sizeof(LONG_NUMERIC), 1, values);
+        }
+    }
+    return offsetsInBucketForKey;
 }
 
 bool ExternalULongKeyComparator2::greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) {

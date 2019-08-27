@@ -37,7 +37,7 @@ public:
 
 struct sttgshm {
     LONG_NUMERIC hash;
-    LONG_NUMERIC size;
+    LONG_NUMERIC number;
     LONG_NUMERIC strlen;
     wchar_t      twograms[2];
     char      string[];
@@ -102,12 +102,15 @@ public:
     void serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id);
     void serializeToSLHM(const std::string &string, LONG_NUMERIC id, KeyValueStore<slhmComparator> &serializer);
 
-    LONG_NUMERIC serializeTermObject(LinkedHashMultimap<std::string, LONG_NUMERIC> &map, FILE *values);
+    LONG_NUMERIC serializeTermObjectMap(LinkedHashMultimap<std::string, LONG_NUMERIC> &map, FILE *values);
 
     void slhmSerializeInOldFormat(void_virtual_sorter *ptr, const std::string hashingFile, const std::string valuesFile,
                                   KeyValueStore<slhmComparator> &c, std::string &oldIndex, std::string &oldValues);
 
-    LONG_NUMERIC serializeOMS(std::vector<std::string> &multimap, FILE *values);
+    LONG_NUMERIC serializeOMSVector(std::vector<std::string> &valuesVector, FILE *values);
+
+    LONG_NUMERIC
+    serializeTGASM(LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> &multimap, FILE *pFile);
 };
 
 
