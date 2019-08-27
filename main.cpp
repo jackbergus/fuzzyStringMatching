@@ -35,9 +35,51 @@
 #include <iostream>
 #include <locale.h>
 
-void init() {
-    std::locale::global(std::locale("en_US.UTF8"));
-    std::wcout.imbue(std::locale());
+void serialize_test_to2M() {
+    FuzzyMatchSerializerSEC secondary_test{"/media/giacomo/Data/test_serialization_csvDir"};
+
+    {
+        LONG_NUMERIC id = 0;
+        std::string key{"Giacomo Bergami"};
+        std::vector<std::string> vector;
+        vector.emplace_back("jackbergus");
+        vector.emplace_back("bergamigiacomo");
+        vector.emplace_back("jackb09");
+        vector.emplace_back("jackb90");
+
+        secondary_test.addGramsToMap(key, id, vector);
+    }
+
+    {
+        LONG_NUMERIC id = 1;
+        std::string key{"Bergami Giancarlo"};
+        std::vector<std::string> vector;
+        vector.emplace_back("bergamisaladini");
+
+        secondary_test.addGramsToMap(key, id, vector);
+    }
+
+    {
+        LONG_NUMERIC id = 2;
+        std::string key{"Saladini Merinella"};
+        std::vector<std::string> vector;
+        vector.emplace_back("bergamisaladini");
+
+        secondary_test.addGramsToMap(key, id, vector);
+    }
+
+    secondary_test.serialize();
+}
+
+void test_query() {
+    FuzzyMatch fm{"/media/giacomo/Data/"};
+    std::string dimension{"test_serialization"};
+    TreeMultimap<double, LONG_NUMERIC> res;
+    std::string query{"berga"};
+    fm.fuzzyMatch(dimension, 0.0, 100, query, res);
+    for (auto it = res.begin(), en = res.end(); it != en; it++) {
+        std::cout << it->first << " @ " << it->second << std::endl;
+    }
 }
 
 int main() {
@@ -77,47 +119,8 @@ int main() {
         handler.readFromFile("/media/giacomo/Biggus/project_dir/data/json/id_to_strings/objectToMultipleStrings.json");
     }*/
 
-    FuzzyMatchSerializerSEC secondary_test{"/media/giacomo/Data/test_serialization_csvDir"};
-    
-    {
-        LONG_NUMERIC id = 0;
-        std::string key{"Giacomo Bergami"};
-        std::vector<std::string> vector;
-        vector.emplace_back("jackbergus");
-        vector.emplace_back("bergamigiacomo");
-        vector.emplace_back("jackb09");
-        vector.emplace_back("jackb90");
-        
-        secondary_test.addGramsToMap(key, id, vector);
-    }
-    
-    {
-        LONG_NUMERIC id = 1;
-        std::string key{"Bergami Giancarlo"};
-        std::vector<std::string> vector;
-        vector.emplace_back("bergamisaladini");
-        
-        secondary_test.addGramsToMap(key, id, vector);
-    }
+    //serialize_test_to2M();
+    test_query();
 
-    {
-        LONG_NUMERIC id = 2;
-        std::string key{"Saladini Merinella"};
-        std::vector<std::string> vector;
-        vector.emplace_back("bergamisaladini");
-
-        secondary_test.addGramsToMap(key, id, vector);
-    }
-
-    secondary_test.serialize();
-
-    /*FuzzyMatch fm{"/media/giacomo/Data/"};
-    std::string dimension{"test_serialization"};
-    TreeMultimap<double, LONG_NUMERIC> res;
-    std::string query{"berga"};
-    fm.fuzzyMatch(dimension, 0.0, 100, query, res);
-    for (auto it = res.begin(), en = res.end(); it != en; it++) {
-        std::cout << it->first << " @ " << it->second << std::endl;
-    }*/
 
 }

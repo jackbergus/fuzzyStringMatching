@@ -114,6 +114,7 @@ void FuzzyMatchSerializerSEC::serializeToSLHM(const std::string &string, LONG_NU
     LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
     struct slhm * lsvmMem = (struct slhm *)slhm_malloc.domalloc(size);
     lsvmMem->hash = stringhashing(string);
+    std::cout << string << " has hash " << lsvmMem->hash << std::endl;
     lsvmMem->strlen = strlen;
     lsvmMem->number = id;
     memset((char *) slhm_hack(lsvmMem), 0, sizeof(char) * (strlen+1));
@@ -227,7 +228,7 @@ void FuzzyMatchSerializerSEC::serialize() {
 
         LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> lhm;
 
-        for (virtual_sorter::iterator it = termObject.begin(); it != termObject.end(); it++) {
+        for (virtual_sorter::iterator it = twogramAndStringMultiplicity.begin(); it != twogramAndStringMultiplicity.end(); it++) {
             struct sttgshm *curr = (struct sttgshm *) it->iov_base;
             LONG_NUMERIC bucket = curr->hash;
 

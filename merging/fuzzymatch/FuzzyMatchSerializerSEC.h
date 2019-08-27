@@ -37,7 +37,7 @@ class slhmComparator : public QuicksortLessComparator {
 public:
     bool greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) override {
         struct slhm *left = (struct slhm*)leftM, *right = (struct slhm*)rightM;
-        return (left->hash < right->hash) ||
+        return (left->hash > right->hash) ||
                 ((left->hash == right->hash) && (strnmcmp(slhm_hack(left), left->strlen, slhm_hack(right), right->strlen) > 0));
     }
 };
@@ -55,7 +55,7 @@ public:
     bool greaterThan(void *leftM, size_t leftS, void *rightM, size_t rightS) override {
         struct sttgshm *left = (struct sttgshm*)leftM, *right = (struct sttgshm*)rightM;
         int cmp = strnmcmp(sttgshm_hack(left), left->strlen, sttgshm_hack(right), right->strlen);
-        return (left->hash < right->hash) ||
+        return (left->hash > right->hash) ||
                ((left->hash == right->hash) && (cmp > 0)) ||
                 ((left->hash == right->hash) && (cmp == 0) && (left->twograms[0] > right->twograms[0] || (left->twograms[0] == right->twograms[0] && (!left->twograms[0]) && left->twograms[1] > right->twograms[1])));
     }
