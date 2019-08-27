@@ -31,7 +31,13 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/stringbuffer.h"*/
 
+#include <iostream>
+#include <locale.h>
 
+void init() {
+    std::locale::global(std::locale("en_US.UTF8"));
+    std::wcout.imbue(std::locale());
+}
 
 int main() {
     /*rapidjson::Document hypothesis;

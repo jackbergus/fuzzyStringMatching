@@ -21,23 +21,23 @@ FuzzyMatchSerializerSEC::FuzzyMatchSerializerSEC(std::string path) :
 
     objectMultipleStirngs_index{path+"/lsvm_index.bin"},
     objectMultipleStirngs_values{path+"/lsvm_values.bin"},
-    objectMultipleStirngs{objectMultipleStirngs_index, objectMultipleStirngs_values},
+    objectMultipleStirngs{path+"/lsvm_index.bin", path+"/lsvm_values.bin"},
 
     gramToObject_index{path+"/gramToObject_index.bin"},
     gramToObject_values{path+"/gramToObject_valuesTmp.bin"},
-    gramToObject{gramToObject_index, gramToObject_values},
+    gramToObject{path+"/gramToObject_index.bin", path+"/gramToObject_valuesTmp.bin"},
 
     objectGramSize_index{path+"/objectGramSize_index.bin"},
     objectGramSize_values{path+"/objectGramSize_valuesTmp.bin"},
-    objectGramSize{objectGramSize_index, objectGramSize_values},
+    objectGramSize{path+"/objectGramSize_index.bin", path+"/objectGramSize_valuesTmp.bin"},
 
     termObject_index{path+"/termObject_index.bin"},
     termObject_values{path+"/termObject_valuesTmp.bin"},
-    termObject{termObject_index, termObject_values},
+    termObject{path+"/termObject_index.bin", path+"/termObject_valuesTmp.bin"},
 
     twogramAndStringMultiplicity_index{path+"/twogramAndStringMultiplicity_index.bin"},
     twogramAndStringMultiplicity_value{path+"/twogramAndStringMultiplicity_valuesTmp.bin"},
-    twogramAndStringMultiplicity{twogramAndStringMultiplicity_index, twogramAndStringMultiplicity_value}
+    twogramAndStringMultiplicity{path+"/twogramAndStringMultiplicity_index.bin", path+"/twogramAndStringMultiplicity_valuesTmp.bin"}
 
     {
 
@@ -45,7 +45,7 @@ FuzzyMatchSerializerSEC::FuzzyMatchSerializerSEC(std::string path) :
 
 void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id,
                                             std::vector<std::string> &associatedOtherStrings) {
-
+    LONG_NUMERIC i = 0;
 
     // Associating the main term to the id
     serializeToSLHM(string, id, termObject);
@@ -68,7 +68,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
     for (std::unordered_map<std::string, LONG_NUMERIC>::iterator begin = cp.begin(), end = cp.end(); begin!=end; begin++) {
         //
         LONG_NUMERIC strlen = string.length();
-        LONG_NUMERIC size = sizeof(struct slhm) + sizeof(wchar_t) * strlen;
+        LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
         void *lsvmMem = twogramAndStringMultiplicity_malloc.domalloc(size);
         ((struct sttgshm *) lsvmMem)->hash = stringhashing(string);
         ((struct sttgshm *) lsvmMem)->strlen = strlen;
@@ -77,7 +77,7 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
         size_t xs = x.length();
         ((struct sttgshm *) lsvmMem)->twograms[0] = (xs == 0) ? '\0' : x[0];
         ((struct sttgshm *) lsvmMem)->twograms[1] = (xs == 1) ? '\0' : x[1];
-        strncpy((char *) (((struct sttgshm *) lsvmMem)->string), (char *) string.c_str(), sizeof(wchar_t) * strlen);
+        strncpy((char *) (((struct sttgshm *) lsvmMem)->string), (char *) string.c_str(), sizeof(char) * strlen);
         twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
 
         //
@@ -90,16 +90,16 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
 void FuzzyMatchSerializerSEC::serializeToSLHM(const std::string &string, LONG_NUMERIC id,
                                               KeyValueStore<slhmComparator> &serializer) {
     LONG_NUMERIC strlen = string.length();
-    LONG_NUMERIC size = sizeof(struct slhm) + sizeof(wchar_t) * strlen;
+    LONG_NUMERIC size = sizeof(struct slhm) + sizeof(char) * (strlen + 1);
     void *lsvmMem = slhm_malloc.domalloc(size);
     ((struct slhm *) lsvmMem)->hash = stringhashing(string);
     ((struct slhm *) lsvmMem)->strlen = strlen;
     ((struct slhm *) lsvmMem)->number = id;
-    strncpy((char *) (((struct slhm *) lsvmMem)->string), (char *) string.c_str(), sizeof(wchar_t) * strlen);
+    strncpy((char *) (((struct slhm *) lsvmMem)->string), (char *) string.c_str(), sizeof(char) * strlen);
 }
 
 void FuzzyMatchSerializerSEC::serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id) {
-    LONG_NUMERIC size = sizeof(LONG_NUMERIC) + string.length() + sizeof(char);
+    LONG_NUMERIC size = sizeof(LONG_NUMERIC) + (string.length() + 1)*(sizeof(char)) + sizeof(char);
     oms_malloc.domalloc(size);
     void* lsvmMem = oms_malloc.domalloc(size);
     *((LONG_NUMERIC *) lsvmMem) = id;

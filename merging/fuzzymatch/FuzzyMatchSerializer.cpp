@@ -24,6 +24,7 @@
 //
 
 #include "FuzzyMatchSerializer.h"
+#include "../../utils/stringuitls.h"
 //#define BOOST_SYSTEM_NO_DEPRECATED
 //#include <boost/filesystem.hpp>
 #include <cstdio>
@@ -42,13 +43,16 @@ void compareStringHashmap1(std::string &str, std::unordered_map<std::string, LON
         int singleGrams = 0;
         for (int i = 0; i < numPairs; i++) {
             std::string s = str.substr(i, 2);
-            std::unordered_map<std::string,LONG_NUMERIC>::iterator pos = map.find(s);
-            if (pos == map.end()) {
-                map[s] = singleGrams++;
-                vec.emplace_back(1);
-            } else {
-                LONG_NUMERIC x = vec[pos->second];
-                vec[pos->second] = x+1;
+            if (!s.empty()) {
+                s = utf8_tolower(s);
+                std::unordered_map<std::string, LONG_NUMERIC>::iterator pos = map.find(s);
+                if (pos == map.end()) {
+                    map[s] = singleGrams++;
+                    vec.emplace_back(1);
+                } else {
+                    LONG_NUMERIC x = vec[pos->second];
+                    vec[pos->second] = x + 1;
+                }
             }
         }
     }
