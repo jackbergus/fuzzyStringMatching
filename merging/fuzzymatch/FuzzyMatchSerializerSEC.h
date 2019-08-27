@@ -5,12 +5,10 @@
 #ifndef INCONSISTENCY_FUZZYMATCHSERIALIZERSEC_H
 #define INCONSISTENCY_FUZZYMATCHSERIALIZERSEC_H
 
-
-#include <locale>
-#include <codecvt>
 #include <string>
-#include <serializers/commons/structure.h>
 #include <vector>
+
+#include <serializers/commons/structure.h>
 #include "../../third_party/varsorter/external_merge_sort/ExternalULongKeyComparator.h"
 #include "../../third_party/varsorter/src/KeyValueStore.h"
 #include "../../utils/stringuitls.h"
@@ -56,6 +54,9 @@ public:
     }
 };
 
+#include <locale>
+#include <codecvt>
+
 class FuzzyMatchSerializerSEC {
     std::string mainDir;
 
@@ -86,7 +87,8 @@ public:
      * @param id                            Object id (eg. an offset)
      * @param associatedOtherStrings        Other secondary strings associated to the preferred object
      */
-    void addGramsToMap(std::wstring &string, LONG_NUMERIC id, std::vector<std::wstring> &associatedOtherStrings);
+    void addGramsToMap(std::string &string, LONG_NUMERIC id,
+                       std::vector<std::string> &associatedOtherStrings);
 
     /**
      * This method serializes the indices as several secondary memory files.

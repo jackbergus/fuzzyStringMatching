@@ -3,11 +3,16 @@
 //
 
 #include <unordered_map>
-#include "FuzzyMatchSerializerSEC.h"
 #include "../../third_party/varsorter/external_merge_sort/ExternalULongKeyComparator.h"
 #include "../../third_party/varsorter/src/KeyValueStore.h"
-#include "FuzzyMatchSerializer.h"
+
+#ifdef  _GLIBCXX_PARALLEL
+#undef  _GLIBCXX_PARALLEL
+#endif
+
 #include "../../fromJava/LinkedHashMultimap.h"
+#include "FuzzyMatchSerializer.h"
+#include "FuzzyMatchSerializerSEC.h"
 
 
 

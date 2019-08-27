@@ -13,10 +13,13 @@ struct LinkedHashMultimap {
     std::vector<K> data;
     std::map<K, std::vector<V>> map;
     void put(K key, V value) {
-        if (map.find(key) == map.end()) {
+        auto it = map.find(key);
+        if (it == map.end()) {
             data.emplace_back(key);
+            map[key].emplace_back(value);
+        } else {
+            it->second.emplace_back(value);
         }
-        map[key].emplace(value);
     }
 
     void clear() {
