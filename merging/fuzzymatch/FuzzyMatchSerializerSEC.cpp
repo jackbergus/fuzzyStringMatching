@@ -86,12 +86,12 @@ void FuzzyMatchSerializerSEC::addGramsToMap(std::string &string, LONG_NUMERIC id
     (lsvmMem)->number = value;
     std::wstring x = this->converter.from_bytes(key.c_str());
     size_t xs = x.length();
-    ///XXXmemory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
-    ///XXXmemory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
-    ///XXX twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
+    //memory_copy((char *) sttgshm_hack(lsvmMem), (char *) string.c_str(), sizeof(char) * strlen);
+    memory_copy((char *) ((lsvmMem)->twograms), (char *) x.c_str(), sizeof(wchar_t) * xs);
+    twogramAndStringMultiplicity.insert(twogramAndStringMultiplicity_malloc.malloced_iovec);
 
         //
-    ///XXXserializeToSLHM(key, id, gramToObject);
+       serializeToSLHM(key, id, gramToObject);
 
         //cp.erase(begin++); //Disposing while iterating
     }
