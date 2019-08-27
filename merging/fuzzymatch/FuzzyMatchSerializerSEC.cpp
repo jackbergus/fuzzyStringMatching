@@ -122,8 +122,8 @@ void FuzzyMatchSerializerSEC::serialize() {
 
         std::vector<std::string> lhm;
 
-        std::string pix{mainDir+"/objectMultipleStirngs_index.bin"};
-        std::string val{mainDir+"/objectMultipleStirngs_values.bin"};
+        std::string pix{mainDir+"/objectMultipleStirngs.csv_vector.bin"};
+        std::string val{mainDir+"/objectMultipleStirngs.csv_values.bin"};
         FILE *primaryIndex = fopen(pix.c_str(), "w");
         FILE *values = fopen(val.c_str(), "w");
 
@@ -172,15 +172,15 @@ void FuzzyMatchSerializerSEC::serialize() {
     }
 
     {
-        slhmSerializeInOldFormat(ptr, mainDir+"/termObject_hashing.bin", mainDir+"/termObject_values.bin", termObject, termObject_index, termObject_values);
+        slhmSerializeInOldFormat(ptr, mainDir+"/termToObjects.csv_vector.bin", mainDir+"/termToObjects.csv_values.bin", termObject, termObject_index, termObject_values);
     }
 
     {
-        slhmSerializeInOldFormat(ptr, mainDir+"/objectGramSize_hashing.bin", mainDir+"/objectGramSize_values.bin", objectGramSize, objectGramSize_index, objectGramSize_values);
+        slhmSerializeInOldFormat(ptr, mainDir+"/objectGramSize.csv_vector.bin", mainDir+"/objectGramSize.csv_values.bin", objectGramSize, objectGramSize_index, objectGramSize_values);
     }
 
     {
-        slhmSerializeInOldFormat(ptr, mainDir+"/gramToObject_hashing.bin", mainDir+"/gramToObject_values.bin", gramToObject, gramToObject_index, gramToObject_values);
+        slhmSerializeInOldFormat(ptr, mainDir+"/gramToObjects.csv_vector.bin", mainDir+"/gramToObjects.csv_values.bin", gramToObject, gramToObject_index, gramToObject_values);
     }
 
     {
@@ -188,8 +188,8 @@ void FuzzyMatchSerializerSEC::serialize() {
         external_merge_sort<sttgshmComparator> gasm_ems;
         gasm_ems.run(twogramAndStringMultiplicity_value, twogramAndStringMultiplicity_index, 3);
 
-        std::string hashingFile = mainDir+"/twogramAndStringMultiplicity_hashing.bin";
-        std::string valuesFile = mainDir+"/twogramAndStringMultiplicity_values.bin";
+        std::string hashingFile = mainDir+"/twogramAndStringToMultiplicity.csv_vector.bin";
+        std::string valuesFile = mainDir+"/twogramAndStringToMultiplicity.csv_values.bin";
         FILE *hashing = fopen(hashingFile.c_str(), "w");
         FILE *values = fopen(valuesFile.c_str(), "w");
 

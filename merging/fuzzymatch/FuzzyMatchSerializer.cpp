@@ -24,8 +24,12 @@
 //
 
 #include "FuzzyMatchSerializer.h"
-#include <boost/filesystem.hpp>
+//#define BOOST_SYSTEM_NO_DEPRECATED
+//#include <boost/filesystem.hpp>
 #include <cstdio>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 
 void compareStringHashmap1(std::string &str, std::unordered_map<std::string, LONG_NUMERIC> &map,
                            std::vector<LONG_NUMERIC> &vec) {
@@ -67,20 +71,20 @@ void compareStringHashmap2(std::string &string, std::unordered_map<std::string, 
 }
 
 void FuzzyMatchSerializer::serialize(std::string path) {
-    boost::filesystem::path p{path};
-    if (!boost::filesystem::exists(p)) {
-        boost::filesystem::create_directories(p);
+    fs::path p{path};
+    if (!fs::exists(p)) {
+        fs::create_directories(p);
     } else {
-        if (!boost::filesystem::is_directory(p)) {
+        if (!fs::is_directory(p)) {
             std::cout << "Removing the file associated to " << p << std::endl;
-            boost::filesystem::remove(p);
-            boost::filesystem::create_directories(p);
+            fs::remove(p);
+            fs::create_directories(p);
         }
 
         // gramToObject serialization
         {
-            std::string gramToObject_hash = boost::filesystem::canonical(p / "gramToObjects.csv_vector.bin").string();
-            std::string gramToObject_vals = boost::filesystem::canonical(p / "gramToObjects.csv_values.bin").string();
+            std::string gramToObject_hash = fs::canonical(p / "gramToObjects.csv_vector.bin").string();
+            std::string gramToObject_vals = fs::canonical(p / "gramToObjects.csv_values.bin").string();
             FILE *hash = fopen64(gramToObject_hash.c_str(), "w");
             FILE *valu = fopen64(gramToObject_vals.c_str(), "w");
             this->gramToObject.serialize(hash, valu);
@@ -90,8 +94,8 @@ void FuzzyMatchSerializer::serialize(std::string path) {
 
         // objectGramSize serialization
         {
-            std::string gramToObject_hash = boost::filesystem::canonical(p / "objectGramSize.csv_vector.bin").string();
-            std::string gramToObject_vals = boost::filesystem::canonical(p / "objectGramSize.csv_values.bin").string();
+            std::string gramToObject_hash = fs::canonical(p / "objectGramSize.csv_vector.bin").string();
+            std::string gramToObject_vals = fs::canonical(p / "objectGramSize.csv_values.bin").string();
             FILE *hash = fopen64(gramToObject_hash.c_str(), "w");
             FILE *valu = fopen64(gramToObject_vals.c_str(), "w");
             this->objectGramSize.serialize(hash, valu);
@@ -101,8 +105,8 @@ void FuzzyMatchSerializer::serialize(std::string path) {
 
         // termObject serialization
         {
-            std::string gramToObject_hash = boost::filesystem::canonical(p / "termToObjects.csv_vector.bin").string();
-            std::string gramToObject_vals = boost::filesystem::canonical(p / "termToObjects.csv_values.bin").string();
+            std::string gramToObject_hash = fs::canonical(p / "termToObjects.csv_vector.bin").string();
+            std::string gramToObject_vals = fs::canonical(p / "termToObjects.csv_values.bin").string();
             FILE *hash = fopen64(gramToObject_hash.c_str(), "w");
             FILE *valu = fopen64(gramToObject_vals.c_str(), "w");
             this->termObject.serialize(hash, valu);
@@ -112,9 +116,9 @@ void FuzzyMatchSerializer::serialize(std::string path) {
 
         // objectMultipleStirngs serialization
         {
-            std::string gramToObject_hash = boost::filesystem::canonical(
+            std::string gramToObject_hash = fs::canonical(
                     p / "objectMultipleStirngs.csv_vector.bin").string();
-            std::string gramToObject_vals = boost::filesystem::canonical(
+            std::string gramToObject_vals = fs::canonical(
                     p / "objectMultipleStirngs.csv_values.bin").string();
             FILE *hash = fopen64(gramToObject_hash.c_str(), "w");
             FILE *valu = fopen64(gramToObject_vals.c_str(), "w");
@@ -125,9 +129,9 @@ void FuzzyMatchSerializer::serialize(std::string path) {
 
         // twogramAndStringMultiplicity serialization
         {
-            std::string gramToObject_hash = boost::filesystem::canonical(
+            std::string gramToObject_hash = fs::canonical(
                     p / "twogramAndStringToMultiplicity.csv_vector.bin").string();
-            std::string gramToObject_vals = boost::filesystem::canonical(
+            std::string gramToObject_vals = fs::canonical(
                     p / "twogramAndStringToMultiplicity.csv_values.bin").string();
             FILE *hash = fopen64(gramToObject_hash.c_str(), "w");
             FILE *valu = fopen64(gramToObject_vals.c_str(), "w");

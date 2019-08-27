@@ -99,18 +99,13 @@ public:
      */
     void serialize();
 
+private:
     void serializeToObjectMultimap(const std::string &string, LONG_NUMERIC id);
     void serializeToSLHM(const std::string &string, LONG_NUMERIC id, KeyValueStore<slhmComparator> &serializer);
-
     LONG_NUMERIC serializeTermObjectMap(LinkedHashMultimap<std::string, LONG_NUMERIC> &map, FILE *values);
-
-    void slhmSerializeInOldFormat(void_virtual_sorter *ptr, const std::string hashingFile, const std::string valuesFile,
-                                  KeyValueStore<slhmComparator> &c, std::string &oldIndex, std::string &oldValues);
-
+    void slhmSerializeInOldFormat(void_virtual_sorter *ptr, const std::string hashingFile, const std::string valuesFile, KeyValueStore<slhmComparator> &c, std::string &oldIndex, std::string &oldValues);
     LONG_NUMERIC serializeOMSVector(std::vector<std::string> &valuesVector, FILE *values);
-
-    LONG_NUMERIC
-    serializeTGASM(LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> &multimap, FILE *pFile);
+    LONG_NUMERIC serializeTGASM(LinkedHashMultimap<std::string, std::pair<std::string, LONG_NUMERIC>> &multimap, FILE *pFile);
 };
 
 

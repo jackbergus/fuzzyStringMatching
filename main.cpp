@@ -18,7 +18,9 @@
  * along with fuzzyStringMatching. If not, see <http://www.gnu.org/licenses/>.
  */
 
- /*
+#include "merging/fuzzymatch/FuzzyMatchSerializerSEC.h"
+
+/*
 #include <iostream>
 #include "merging/jsons/idToOffsetHandler.h"
 #include "merging/fuzzymatch/FuzzyMatch.h"
@@ -68,6 +70,37 @@ int main() {
         handler.readFromFile("/media/giacomo/Biggus/project_dir/data/json/id_to_strings/objectToMultipleStrings.json");
     }*/
 
+    FuzzyMatchSerializerSEC secondary_test{"/media/giacomo/Data/test_serialization"};
+    
+    {
+        LONG_NUMERIC id = 0;
+        std::string key{"Giacomo Bergami"};
+        std::vector<std::string> vector;
+        vector.emplace_back("jackbergus");
+        vector.emplace_back("bergamigiacomo");
+        vector.emplace_back("jackb09");
+        
+        secondary_test.addGramsToMap(key, id, vector);
+    }
+    
+    {
+        LONG_NUMERIC id = 1;
+        std::string key{"Bergami Giancarlo"};
+        std::vector<std::string> vector;
+        vector.emplace_back("bergamisaladini");
+        
+        secondary_test.addGramsToMap(key, id, vector);
+    }
 
+    {
+        LONG_NUMERIC id = 2;
+        std::string key{"Saladini Merinella"};
+        std::vector<std::string> vector;
+        vector.emplace_back("bergamisaladini");
+
+        secondary_test.addGramsToMap(key, id, vector);
+    }
+
+    secondary_test.serialize();
 
 }
