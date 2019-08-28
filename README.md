@@ -1,7 +1,5 @@
 # fuzzyStringMatching
 
-This library provides a support for performing fuzzy string matching in secondary memory.
+This library provides a support for performing fuzzy string matching in secondary memory. If the data to be indexed increases the primary memory size, the current code provides some classes performing external merge sorts over variadic data via [varsorter](https://github.com/jackbergus/varsorter). 
 
-## TODO
-
-1) For the moment, the library uses the primary memory for performing a preliminar index of the structure, and then serialize the data in secondary memory. This approach might not work for big data. Therefore, at the moment I'm planning to allow the user to use temporary secondary memory data structures for keeping all the information that won't fit in RAM.
+Some more debugging is required on the approximate string matching algorithm.
