@@ -143,16 +143,16 @@ void FuzzyMatch_FDContainer::rankCollectionOf(HashSet<LONG_NUMERIC> &k, HashMap<
                 // no memoization
                 void *ls = objectGramSize.searchForId(associatedToElement);
                 double leftCount = 0;
-                if (ls == nullptr) {
+                //if (ls == nullptr) {
                     HashMap<String, LONG_NUMERIC> retMap;
                     ArrayList<LONG_NUMERIC> retList;
                     compareStringHashMap(associatedToElement, retMap, retList);
                     for (LONG_NUMERIC& x : retList) leftCount+=x;
                     score = (e * 2.0) / ((leftCount + size)*1.0);
-                } else {
+                /*} else {
                     LONG_NUMERIC* ptr = LONG_ARRAY_ELEMENT(ls);
                     score = (e * 2.0) / ((ptr[0] + size)*1.0);
-                }
+                }*/
 
                 if (threshold >= 0 && score >= threshold) {
                     pollMap.add(score, element);

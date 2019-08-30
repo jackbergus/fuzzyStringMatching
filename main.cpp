@@ -75,7 +75,7 @@ void test_query() {
     FuzzyMatch fm{"/media/giacomo/Data/"};
     std::string dimension{"test_serialization"};
     TreeMultimap<double, LONG_NUMERIC> res;
-    std::string query{"berga"};
+    std::string query{"gia"};
     fm.fuzzyMatch(dimension, 0.0, 100, query, res);
     for (auto it = res.begin(), en = res.end(); it != en; it++) {
         std::cout << it->first << " @ " << it->second << std::endl;
