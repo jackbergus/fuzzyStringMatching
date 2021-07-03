@@ -7,3 +7,6 @@
 [submodule "third_party/varsorter"]
 	path = third_party/varsorter
 	url = https://github.com/jackbergus/varsorter
+[submodule "third_party/csv"]
+	path = third_party/csv
+	url = https://github.com/ben-strasser/fast-cpp-csv-parser
