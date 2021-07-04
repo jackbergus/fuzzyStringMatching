@@ -30,11 +30,13 @@
 #include <unistd.h>
 #include <string>
 
-#include <numeric/compares.h>
+#include <yaucl/structures/rbtree/rbtree.h>
+using namespace yaucl::structures::rbtree;
+#include <yaucl/algorithms/binsearch.h>
+using namespace yaucl::algorithms;
 #include <serializers/commons/structure.h>
-#include <rbtree/rbtree.h>
-#include <serializers/commons/structure.h>
-#include <serializers/utils/mmapFile.h>
+#include <yaucl/fs/mmapFile.h>
+//using namespace yaucl::fs;
 #include <yaucl/java/java_classes_name.h>
 
 #include <yaucl/algorithms/binsearch.h>

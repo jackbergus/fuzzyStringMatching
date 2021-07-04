@@ -38,9 +38,9 @@ void findStringndexOffset(char* a, char* b, int* res) {
 void SLHM_Secondary::open(std::string csvFile) {
     std::string vector = csvFile + "_vector.bin";
     std::string values = csvFile + "_values.bin";
-    pimarySparseIndex = (struct long_index_file*)(((char*)mmapFile(vector, &this->sizeVector, &fdVector)));
+    pimarySparseIndex = (struct long_index_file*)(((char*) yaucl::fs::mmapFile(vector, &this->sizeVector, &fdVector)));
     primarySize = sizeVector / sizeof(struct long_index_file);
-    element = ((char*)mmapFile(values, &this->sizeValues, &fdValues));
+    element = ((char*) yaucl::fs::mmapFile(values, &this->sizeValues, &fdValues));
 }
 
 void *SLHM_Secondary::searchForId(std::string &toSearch) {

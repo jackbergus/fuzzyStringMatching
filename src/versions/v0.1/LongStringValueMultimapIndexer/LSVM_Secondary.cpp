@@ -35,10 +35,11 @@ void LSVM_Secondary::open(std::string csvFile) {
     std::string vector = csvFile + "_vector.bin";
     std::string values = csvFile + "_values.bin";
     ///media/giacomo/OutputBlank/cout_exe/Weapon_csvDir/objectToMultipleStrings.csv_vector.bin
-    pimarySparseIndex = (struct long_index_file*)(((char*)mmapFile(vector, &this->sizeVector, &fdVector)));
+
+    pimarySparseIndex = (struct long_index_file*)(((char*) yaucl::fs::mmapFile(vector, &this->sizeVector, &fdVector)));
     primarySize = sizeVector / sizeof(struct long_index_file);
 
-    element = ((char*)mmapFile(values, &this->sizeValues, &fdValues));
+    element = ((char*) yaucl::fs::mmapFile(values, &this->sizeValues, &fdValues));
 }
 
 char* LSVM_Secondary::searchForId(LONG_NUMERIC toSearch) {

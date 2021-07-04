@@ -25,7 +25,8 @@
 
 #include "versions/v0.1/libfuzzymatch.h"
 #include <serializers/commons/structure.h>
-#include <serializers/utils/mmapFile.h>
+#include <yaucl/fs/mmapFile.h>
+//using namespace yaucl::fs;
 #include <yaucl/algorithms/binsearch.h>
 using namespace yaucl::algorithms;
 
