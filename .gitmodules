@@ -10,3 +10,6 @@
 [submodule "third_party/csv"]
 	path = third_party/csv
 	url = https://github.com/ben-strasser/fast-cpp-csv-parser
+[submodule "third_party/yaucl"]
+	path = third_party/yaucl
+	url = https://github.com/datagramdb/yaucl

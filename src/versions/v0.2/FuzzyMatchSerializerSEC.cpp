@@ -10,7 +10,8 @@
 #undef  _GLIBCXX_PARALLEL
 #endif
 
-#include "structures/LinkedHashMultimap.h"
+#include <yaucl/structures/LinkedHashMultimap.h>
+using namespace yaucl::structures;
 #include "versions/v0.2/FuzzyMatchSerializer.h"
 #include "versions/v0.2/FuzzyMatchSerializerSEC.h"
 

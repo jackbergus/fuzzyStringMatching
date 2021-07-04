@@ -11,8 +11,12 @@
 #include <serializers/commons/structure.h>
 #include "../../../third_party/varsorter/external_merge_sort/ExternalULongKeyComparator.h"
 #include "../../../third_party/varsorter/src/KeyValueStore.h"
-#include "utils/stringuitls.h"
-#include "structures/LinkedHashMultimap.h"
+
+#include <yaucl/strings/stringutils.h>
+using namespace yaucl::strings;
+
+#include <yaucl/structures/LinkedHashMultimap.h>
+using namespace yaucl::structures;
 
 class ExternalULongKeyComparator2 : public QuicksortLessComparator {
 public:

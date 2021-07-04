@@ -35,9 +35,14 @@
 #include <rbtree/rbtree.h>
 #include <serializers/commons/structure.h>
 #include <serializers/utils/mmapFile.h>
-#include "utils/java_classes_facsimile.h"
-#include <algorithms/binsearch.h>
-#include "structures/PollMap.h"
+#include <yaucl/java/java_classes_name.h>
+
+#include <yaucl/algorithms/binsearch.h>
+using namespace yaucl::algorithms;
+
+#include <yaucl/structures/PollMap.h>
+using namespace yaucl::structures;
+
 
 /**
  * Data structure used for comparing pairs in primary memory where the fist element is a string. Please note that

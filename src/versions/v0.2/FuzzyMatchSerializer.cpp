@@ -24,7 +24,10 @@
 //
 
 #include "versions/v0.2/FuzzyMatchSerializer.h"
-#include "utils/stringuitls.h"
+
+#include <yaucl/strings/stringutils.h>
+using namespace yaucl::strings;
+
 //#define BOOST_SYSTEM_NO_DEPRECATED
 //#include <boost/filesystem.hpp>
 #include <cstdio>

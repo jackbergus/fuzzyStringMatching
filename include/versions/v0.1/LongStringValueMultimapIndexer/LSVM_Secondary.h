@@ -26,8 +26,8 @@
 #include "versions/v0.1/libfuzzymatch.h"
 #include <serializers/commons/structure.h>
 #include <serializers/utils/mmapFile.h>
-#include <algorithms/binsearch.h>
-
+#include <yaucl/algorithms/binsearch.h>
+using namespace yaucl::algorithms;
 
 #ifndef EDGEINDEXING_LSVMI_SECONDARY_H
 #define EDGEINDEXING_LSVMI_SECONDARY_H
